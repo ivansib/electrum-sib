@@ -17,7 +17,7 @@ if [ ! -d "$PACKAGES" ]; then
   exit 1
 fi
 
-pushd ./electrum/gui/kivy/
+pushd ./electrum_sibcoin/gui/kivy/
 
 make theming
 

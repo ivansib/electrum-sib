@@ -7,15 +7,16 @@ from binascii import hexlify, unhexlify
 
 import websocket
 
-from PyQt5.QtWidgets import QDialog, QLineEdit, QTextEdit, QVBoxLayout, QLabel
+from PyQt5.QtWidgets import (QDialog, QLineEdit, QTextEdit, QVBoxLayout, QLabel,
+                             QWidget, QHBoxLayout, QComboBox, QPushButton)
+from PyQt5.QtCore import QThread, pyqtSignal
 
-from btchip.btchip import *
+from btchip.btchip import BTChipException
 
 from electrum_sibcoin.i18n import _
 from electrum_sibcoin.util import print_msg
 from electrum_sibcoin import constants, bitcoin
 from electrum_sibcoin.gui.qt.qrcodewidget import QRCodeWidget
-from electrum_sibcoin.gui.qt.util import *
 
 
 DEBUG = False

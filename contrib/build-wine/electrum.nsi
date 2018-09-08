@@ -72,7 +72,7 @@
   !define MUI_ABORTWARNING
   !define MUI_ABORTWARNING_TEXT "Are you sure you wish to abort the installation of ${PRODUCT_NAME}?"
   
-  !define MUI_ICON "c:\electrum-sib\icons\electrum-sibcoin.ico"
+  !define MUI_ICON "electrum_sibcoin\gui\icons\electrum-dash.ico"
   
 ;--------------------------------
 ;Pages
@@ -111,7 +111,7 @@ Section
   
   ;Files to pack into the installer
   File /r "dist\electrum\*.*"
-  File "c:\electrum-sib\icons\electrum-sibcoin.ico"
+  File "electrum-sib\gui\icons\electrum-sibcoin.ico"
 
   ;Store installation folder
   WriteRegStr HKCU "Software\${PRODUCT_NAME}" "" $INSTDIR

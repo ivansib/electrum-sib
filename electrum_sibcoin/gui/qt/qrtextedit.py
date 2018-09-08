@@ -1,6 +1,7 @@
+from PyQt5.QtWidgets import QFileDialog
+
 from electrum_sibcoin.i18n import _
 from electrum_sibcoin.plugin import run_hook
-from PyQt5.QtWidgets import QFileDialog
 
 from .util import ButtonsTextEdit, MessageBoxMixin, ColorScheme
 
@@ -34,8 +35,8 @@ class ScanQRTextEdit(ButtonsTextEdit, MessageBoxMixin):
         ButtonsTextEdit.__init__(self, text)
         self.allow_multi = allow_multi
         self.setReadOnly(0)
-        self.addButton(":icons/file.png", self.file_input, _("Read file"))
-        icon = ":icons/qrcode.png"
+        self.addButton("file.png", self.file_input, _("Read file"))
+        icon = "camera_white.png" if ColorScheme.dark_scheme else "camera_dark.png"
         self.addButton(icon, self.qr_input, _("Read QR code"))
         run_hook('scan_text_edit', self)
 

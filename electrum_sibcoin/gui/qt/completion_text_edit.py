@@ -26,7 +26,9 @@
 from PyQt5.QtGui import QTextCursor
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QCompleter, QPlainTextEdit, QApplication
+
 from .util import ButtonsTextEdit
+
 
 class CompletionTextEdit(ButtonsTextEdit):
 

@@ -55,8 +55,7 @@ QGroupBox::title {
 }
 
 #main_window_nav_bar > QTabBar {
-    background-image: url(:/icons/navlogo.png);
-    background-repeat: no-repeat;
+    background: url(electrum_sibcoin/gui/icons/navlogo.png) no-repeat left top;
 }
 
 QTabWidget#main_window_nav_bar::tab-bar {
@@ -84,7 +83,7 @@ QTabWidget#main_window_nav_bar::pane {
     border-right: 0 solid #fff;
 }
 
-#main_window_nav_bar > QTabBar::tab:selected, #main_window_nav_bar QTabBar::tab:hover {
+#main_window_nav_bar > QTabBar::tab:selected, #main_window_nav_bar > QTabBar::tab:hover {
     background-color:#25256f;
     color:#fff;
 }
@@ -112,39 +111,39 @@ QCheckBox::indicator {
 }
 
 QCheckBox::indicator:unchecked {
-    image:url(':icons/checkbox/unchecked.png');
+    image:url('electrum_sibcoin/gui/icons/checkbox/unchecked.png');
 }
 
 QCheckBox::indicator:unchecked:disabled {
-    image:url(':icons/checkbox/unchecked_disabled.png');
+    image:url('electrum_sibcoin/gui/icons/checkbox/unchecked_disabled.png');
 }
 
 QCheckBox::indicator:unchecked:pressed {
-    image:url(':icons/checkbox/checked.png');
+    image:url('electrum_sibcoin/gui/icons/checkbox/checked.png');
 }
 
 QCheckBox::indicator:checked {
-    image:url(':icons/checkbox/checked.png');
+    image:url('electrum_sibcoin/gui/icons/checkbox/checked.png');
 }
 
 QCheckBox::indicator:checked:disabled {
-    image:url(':icons/checkbox/checked_disabled.png');
+    image:url('electrum_sibcoin/gui/icons/checkbox/checked_disabled.png');
 }
 
 QCheckBox::indicator:checked:pressed {
-    image:url(':icons/checkbox/unchecked.png');
+    image:url('electrum_sibcoin/gui/icons/checkbox/unchecked.png');
 }
 
 QCheckBox::indicator:indeterminate {
-    image:url(':icons/checkbox/indeterminate.png');
+    image:url('electrum_sibcoin/gui/icons/checkbox/indeterminate.png');
 }
 
 QCheckBox::indicator:indeterminate:disabled {
-    image:url(':icons/checkbox/indeterminate_disabled.png');
+    image:url('electrum_sibcoin/gui/icons/checkbox/indeterminate_disabled.png');
 }
 
 QCheckBox::indicator:indeterminate:pressed {
-    image:url(':icons/checkbox/checked.png');
+    image:url('electrum_sibcoin/gui/icons/checkbox/checked.png');
 }
 
 QRadioButton {
@@ -159,27 +158,27 @@ QRadioButton::indicator {
 }
 
 QRadioButton::indicator::unchecked {
-    image:url(':icons/radio/unchecked.png');
+    image:url('electrum_sibcoin/gui/icons/radio/unchecked.png');
 }
 
 QRadioButton::indicator:unchecked:disabled {
-    image:url(':icons/radio/unchecked_disabled.png');
+    image:url('electrum_sibcoin/gui/icons/radio/unchecked_disabled.png');
 }
 
 QRadioButton::indicator:unchecked:pressed {
-    image:url(':icons/radio/checked.png');
+    image:url('electrum_sibcoin/gui/icons/radio/checked.png');
 }
 
 QRadioButton::indicator::checked {
-    image:url(':icons/radio/checked.png');
+    image:url('electrum_sibcoin/gui/icons/radio/checked.png');
 }
 
 QRadioButton::indicator:checked:disabled {
-    image:url(':icons/radio/checked_disabled.png');
+    image:url('electrum_sibcoin/gui/icons/radio/checked_disabled.png');
 }
 
 QRadioButton::indicator:checked:pressed {
-    image:url(':icons/radio/checked.png');
+    image:url('electrum_sibcoin/gui/icons/radio/checked.png');
 }
 
 ScanQRTextEdit, ShowQRTextEdit, ButtonsTextEdit {
@@ -406,7 +405,7 @@ QComboBox::drop-down {
 }
 
 QComboBox::down-arrow {
-    border-image: url(':/icons/sibcoin_downArrow.png') 0 0 0 0 stretch stretch;
+    border-image: url('electrum_sibcoin/gui/icons/sibcoin_downArrow.png') 0 0 0 0 stretch stretch;
 }
 
 QComboBox QListView {
@@ -455,23 +454,23 @@ QAbstractSpinBox::down-button {
 }
 
 QAbstractSpinBox::up-arrow {
-    image: url(:/icons/sibcoin_upArrow_small.png);
+    image: url(electrum_sibcoin/gui/icons/sibcoin_upArrow_small.png);
     width: 10px;
     height: 10px;
 }
 
 QAbstractSpinBox::up-arrow:disabled, QAbstractSpinBox::up-arrow:off {
-    image: url(:/icons/sibcoin_upArrow_small_disabled.png);
+    image: url(electrum_sibcoin/gui/icons/sibcoin_upArrow_small_disabled.png);
 }
 
 QAbstractSpinBox::down-arrow {
-    image: url(:/icons/sibcoin_downArrow_small.png);
+    image: url(electrum_sibcoin/gui/icons/sibcoin_downArrow_small.png);
     width: 10px;
     height: 10px;
 }
 
 QAbstractSpinBox::down-arrow:disabled, QAbstractSpinBox::down-arrow:off {
-    image: url(:/icons/sibcoin_downArrow_small_disabled.png);
+    image: url(electrum_sibcoin/gui/icons/sibcoin_downArrow_small_disabled.png);
 }
 
 QSlider::groove:horizontal {
@@ -615,41 +614,42 @@ QScrollBar:up-arrow, QScrollBar:down-arrow, QScrollBar:left-arrow, QScrollBar:ri
 }
 
 QScrollBar:up-arrow {
-    background-image: url(':/icons/sibcoin_upArrow_small.png');
+    background-image: url('electrum_sibcoin/gui/icons/sibcoin_upArrow_small.png');
 }
 
 QScrollBar:down-arrow {
-    background-image: url(':/icons/sibcoin_downArrow_small.png');
+    background-image: url('electrum_sibcoin/gui/icons/sibcoin_downArrow_small.png');
 }
 
 QScrollBar:left-arrow {
-    background-image: url(':/icons/sibcoin_leftArrow_small.png');
+    background-image: url('electrum_sibcoin/gui/icons/sibcoin_leftArrow_small.png');
 }
 
 QScrollBar:right-arrow {
-    background-image: url(':/icons/sibcoin_rightArrow_small.png');
+    background-image: url('electrum_sibcoin/gui/icons/sibcoin_rightArrow_small.png');
 }
 
 
 /**********************/
 /* 8. Tree Widget */
 
-QTreeWidget, QListWidget, QTableView, QTextEdit  {
+QTreeView, QTreeWidget, QListWidget, QTableView, QTextEdit  {
     border: 0px;
     color:#818181;
     background:qradialgradient(cx:0.5, cy:0.5, radius: 0.5, fx:0.5, fy:0.5, stop:0 rgba(255, 255, 255, 255), stop: 1 rgba(246, 246, 246, 255));
 }
 
-QTreeWidget QLineEdit {
+QTreeView QLineEdit, QTreeWidget QLineEdit {
     min-height: 0;
     padding: 0;
 }
 
-QListWidget, QTableView, QTextEdit, QDialog QTreeWidget {
+QListWidget, QTableView, QTextEdit, QDialog QTreeWidget, QDialog QTreeView {
     border: 1px solid #2e2ed6;
 }
 
-#send_container QTreeWidget, #receive_container QTreeWidget {
+#send_container QTreeWidget, #receive_container QTreeWidget,
+#send_container QTreeView, #receive_container QTreeView {
     border: 1px solid #2e2ed6;
     background-color: #fff;
 }

@@ -25,14 +25,15 @@
 
 from PyQt5.QtWidgets import QVBoxLayout, QCheckBox, QCompleter
 from PyQt5.QtGui import QPixmap
+from PyQt5.QtWidgets import (QVBoxLayout, QCheckBox, QHBoxLayout, QLineEdit,
+                             QLabel, QCompleter, QDialog)
 
 from electrum_sibcoin.i18n import _
 from electrum_sibcoin.mnemonic import Mnemonic
 import electrum_sibcoin.old_mnemonic
-from electrum_sibcoin.plugin import run_hook
 
-
-from .util import *
+from .util import (Buttons, OkButton, WWLabel, ButtonsTextEdit, icon_path,
+                   EnterButton, CloseButton, WindowModalDialog)
 from .qrtextedit import ShowQRTextEdit, ScanQRTextEdit
 from .completion_text_edit import CompletionTextEdit
 
@@ -115,7 +116,8 @@ class SeedLayout(QVBoxLayout):
         hbox = QHBoxLayout()
         if icon:
             logo = QLabel()
-            logo.setPixmap(QPixmap(":icons/seed.png").scaledToWidth(64, mode=Qt.SmoothTransformation))
+            logo.setPixmap(QPixmap(icon_path("seed.png"))
+                           .scaledToWidth(64, mode=Qt.SmoothTransformation))
             logo.setMaximumWidth(60)
             hbox.addWidget(logo)
         hbox.addWidget(self.seed_e)
