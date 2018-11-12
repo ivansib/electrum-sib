@@ -94,7 +94,7 @@ def filter_noonion(servers):
     return {k: v for k, v in servers.items() if not k.endswith('.onion')}
 
 
-def filter_protocol(hostmap, protocol='s'):
+def filter_protocol(hostmap, protocol='t'):
     '''Filters the hostmap for those implementing protocol.
     The result is a list in serialized form.'''
     eligible = []
@@ -105,7 +105,7 @@ def filter_protocol(hostmap, protocol='s'):
     return eligible
 
 
-def pick_random_server(hostmap = None, protocol = 's', exclude_set = set()):
+def pick_random_server(hostmap = None, protocol = 't', exclude_set = set()):
     if hostmap is None:
         hostmap = constants.net.DEFAULT_SERVERS
     eligible = list(set(filter_protocol(hostmap, protocol)) - exclude_set)
@@ -1151,7 +1151,8 @@ class Network(util.DaemonThread):
 
     def on_notify_header(self, interface, header_dict):
         try:
-            header_hex, height = header_dict['hex'], header_dict['height']
+            height = header_dict['block_height']
+            header_hex = blockchain.serialize_header(header_dict)
         except KeyError:
             # no point in keeping this connection without headers sub
             self.connection_down(interface.server)

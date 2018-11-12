@@ -24,3 +24,5 @@ electrum_data/
 electrum_dash/gui/kivy/theming/light-0.png
 electrum_dash/gui/kivy/theming/light.atlas
 *.egg-info/
+
+.idea/
