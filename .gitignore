@@ -3,7 +3,7 @@
 *.swp
 build/
 dist/
-electrum_dash/gui/qt/icons_rc.py
+electrum_sibcoin/gui/qt/icons_rc.py
 locale/
 .devlocaltmp/
 *_trial_temp
@@ -21,8 +21,8 @@ bin/
 .coverage
 
 electrum_data/
-electrum_dash/gui/kivy/theming/light-0.png
-electrum_dash/gui/kivy/theming/light.atlas
+electrum_sibcoin/gui/kivy/theming/light-0.png
+electrum_sibcoin/gui/kivy/theming/light.atlas
 *.egg-info/
 
 .idea/
