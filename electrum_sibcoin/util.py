@@ -45,13 +45,13 @@ def inv_dict(d):
     return {v: k for k, v in d.items()}
 
 
-base_units = {'DASH':8, 'mDASH':5, 'uDASH':2, 'duffs':0}
+base_units = {'SIB':8, 'mSIB':5, 'uSIB':2, 'ivans':0}
 base_units_inverse = inv_dict(base_units)
-base_units_list = ['DASH', 'mDASH', 'uDASH', 'duffs']  # list(dict) does not guarantee order
+base_units_list = ['SIB', 'mSIB', 'uSIB', 'ivans']  # list(dict) does not guarantee order
 
 
 def decimal_point_to_base_unit_name(dp: int) -> str:
-    # e.g. 8 -> "DASH"
+    # e.g. 8 -> "SIB"
     try:
         return base_units_inverse[dp]
     except KeyError:
@@ -59,7 +59,7 @@ def decimal_point_to_base_unit_name(dp: int) -> str:
 
 
 def base_unit_name_to_decimal_point(unit_name: str) -> int:
-    # e.g. "DASH" -> 8
+    # e.g. "SIB" -> 8
     try:
         return base_units[unit_name]
     except KeyError:
@@ -140,7 +140,7 @@ class Satoshis(object):
         return 'Duffs(%d)'%self.value
 
     def __str__(self):
-        return format_satoshis(self.value) + " DASH"
+        return format_satoshis(self.value) + " SIB"
 
 class Fiat(object):
     __slots__ = ('value', 'ccy')
@@ -469,11 +469,11 @@ def user_dir():
     if 'ANDROID_DATA' in os.environ:
         return android_check_data_dir()
     elif os.name == 'posix':
-        return os.path.join(os.environ["HOME"], ".electrum-dash")
+        return os.path.join(os.environ["HOME"], ".electrum-sibcoin")
     elif "APPDATA" in os.environ:
-        return os.path.join(os.environ["APPDATA"], "Electrum-DASH")
+        return os.path.join(os.environ["APPDATA"], "Electrum-SIBCOIN")
     elif "LOCALAPPDATA" in os.environ:
-        return os.path.join(os.environ["LOCALAPPDATA"], "Electrum-DASH")
+        return os.path.join(os.environ["LOCALAPPDATA"], "Electrum-SIBCOIN")
     else:
         #raise Exception("No home directory found in environment variables.")
         return

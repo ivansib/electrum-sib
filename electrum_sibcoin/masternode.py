@@ -1,4 +1,4 @@
-"""DASH masternode support."""
+"""SIBCOIN masternode support."""
 import time
 import base64
 
