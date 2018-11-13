@@ -3,7 +3,7 @@
 import pkgutil
 
 
-PLUGINS_PREFIX = 'electrum_dash.plugins'
+PLUGINS_PREFIX = 'electrum_sibcoin.plugins'
 
 KEYSTORE_PLUGINS = [
     'hw_wallet',

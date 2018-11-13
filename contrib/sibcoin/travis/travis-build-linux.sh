@@ -6,20 +6,20 @@ if [[ -z $TRAVIS_TAG ]]; then
   exit 1
 fi
 
-BUILD_REPO_URL=https://github.com/akhavr/electrum-dash.git
+BUILD_REPO_URL=https://github.com/akhavr/electrum-sibcoin.git
 
 cd build
 
-git clone --branch $TRAVIS_TAG $BUILD_REPO_URL electrum-dash
+git clone --branch $TRAVIS_TAG $BUILD_REPO_URL electrum-sibcoin
 
-mkdir -p electrum-dash/dist
-wget -O electrum-dash/dist/tor-proxy-setup.exe \
+mkdir -p electrum-sibcoin/dist
+wget -O electrum-sibcoin/dist/tor-proxy-setup.exe \
     https://github.com/zebra-lucky/tor-proxy/releases/download/0.3.3.9/tor-proxy-0.3.3.9-setup.exe
 
 docker run --rm \
     -v $(pwd):/opt \
-    -w /opt/electrum-dash \
-    -t zebralucky/electrum-dash-winebuild:Linux /opt/build_linux.sh
+    -w /opt/electrum-sibcoin \
+    -t zebralucky/electrum-sibcoin-winebuild:Linux /opt/build_linux.sh
 
 sudo find . -name '*.po' -delete
 sudo find . -name '*.pot' -delete
@@ -42,9 +42,9 @@ docker run --rm \
     -e WINEPREFIX=$WINEPREFIX \
     -e PYHOME=$PYHOME \
     -v $(pwd):/opt \
-    -v $(pwd)/electrum-dash/:$WINEPREFIX/drive_c/electrum-dash \
-    -w /opt/electrum-dash \
-    -t zebralucky/electrum-dash-winebuild:WinePy36 /opt/build_wine.sh
+    -v $(pwd)/electrum-sibcoin/:$WINEPREFIX/drive_c/electrum-sibcoin \
+    -w /opt/electrum-sibcoin \
+    -t zebralucky/electrum-sibcoin-winebuild:WinePy36 /opt/build_wine.sh
 
 export WINEARCH=win64
 export WINEPREFIX=/root/.wine-64
@@ -64,6 +64,6 @@ docker run --rm \
     -e WINEPREFIX=$WINEPREFIX \
     -e PYHOME=$PYHOME \
     -v $(pwd):/opt \
-    -v $(pwd)/electrum-dash/:$WINEPREFIX/drive_c/electrum-dash \
-    -w /opt/electrum-dash \
-    -t zebralucky/electrum-dash-winebuild:WinePy36 /opt/build_wine.sh
+    -v $(pwd)/electrum-sibcoin/:$WINEPREFIX/drive_c/electrum-sibcoin \
+    -w /opt/electrum-sibcoin \
+    -t zebralucky/electrum-sibcoin-winebuild:WinePy36 /opt/build_wine.sh

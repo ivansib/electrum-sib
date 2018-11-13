@@ -16,42 +16,42 @@ hiddenimports += collect_submodules('btchip')
 hiddenimports += collect_submodules('keepkeylib')
 hiddenimports += collect_submodules('websocket')
 hiddenimports += [
-    'electrum_dash',
-    'electrum_dash.base_crash_reporter',
-    'electrum_dash.base_wizard',
-    'electrum_dash.plot',
-    'electrum_dash.qrscanner',
-    'electrum_dash.websockets',
-    'electrum_dash.gui.qt',
+    'electrum_sibcoin',
+    'electrum_sibcoin.base_crash_reporter',
+    'electrum_sibcoin.base_wizard',
+    'electrum_sibcoin.plot',
+    'electrum_sibcoin.qrscanner',
+    'electrum_sibcoin.websockets',
+    'electrum_sibcoin.gui.qt',
     'PyQt5.sip',
 
-    'electrum_dash.plugins',
+    'electrum_sibcoin.plugins',
 
-    'electrum_dash.plugins.hw_wallet.qt',
+    'electrum_sibcoin.plugins.hw_wallet.qt',
 
-    'electrum_dash.plugins.audio_modem.qt',
-    'electrum_dash.plugins.cosigner_pool.qt',
-    'electrum_dash.plugins.digitalbitbox.qt',
-    'electrum_dash.plugins.email_requests.qt',
-    'electrum_dash.plugins.keepkey.qt',
-    'electrum_dash.plugins.revealer.qt',
-    'electrum_dash.plugins.labels.qt',
-    'electrum_dash.plugins.trezor.client',
-    'electrum_dash.plugins.trezor.qt',
-    'electrum_dash.plugins.safe_t.client',
-    'electrum_dash.plugins.safe_t.qt',
-    'electrum_dash.plugins.ledger.qt',
-    'electrum_dash.plugins.virtualkeyboard.qt',
+    'electrum_sibcoin.plugins.audio_modem.qt',
+    'electrum_sibcoin.plugins.cosigner_pool.qt',
+    'electrum_sibcoin.plugins.digitalbitbox.qt',
+    'electrum_sibcoin.plugins.email_requests.qt',
+    'electrum_sibcoin.plugins.keepkey.qt',
+    'electrum_sibcoin.plugins.revealer.qt',
+    'electrum_sibcoin.plugins.labels.qt',
+    'electrum_sibcoin.plugins.trezor.client',
+    'electrum_sibcoin.plugins.trezor.qt',
+    'electrum_sibcoin.plugins.safe_t.client',
+    'electrum_sibcoin.plugins.safe_t.qt',
+    'electrum_sibcoin.plugins.ledger.qt',
+    'electrum_sibcoin.plugins.virtualkeyboard.qt',
 ]
 
 datas = [
-    ('electrum_dash/servers.json', 'electrum_dash'),
-    ('electrum_dash/servers_testnet.json', 'electrum_dash'),
-    ('electrum_dash/servers_regtest.json', 'electrum_dash'),
-    ('electrum_dash/currencies.json', 'electrum_dash'),
-    ('electrum_dash/checkpoints.json', 'electrum_dash'),
-    ('electrum_dash/locale', 'electrum_dash/locale'),
-    ('electrum_dash/wordlist', 'electrum_dash/wordlist'),
+    ('electrum_sibcoin/servers.json', 'electrum_sibcoin'),
+    ('electrum_sibcoin/servers_testnet.json', 'electrum_sibcoin'),
+    ('electrum_sibcoin/servers_regtest.json', 'electrum_sibcoin'),
+    ('electrum_sibcoin/currencies.json', 'electrum_sibcoin'),
+    ('electrum_sibcoin/checkpoints.json', 'electrum_sibcoin'),
+    ('electrum_sibcoin/locale', 'electrum_sibcoin/locale'),
+    ('electrum_sibcoin/wordlist', 'electrum_sibcoin/wordlist'),
     ('C:\\zbarw', '.'),
 ]
 datas += collect_data_files('trezorlib')
@@ -107,7 +107,7 @@ excludes += [
     'PyQt5.QtWinExtras',
 ]
 
-a = Analysis(['electrum-dash'],
+a = Analysis(['electrum-sibcoin'],
              hiddenimports=hiddenimports,
              datas=datas,
              binaries=binaries,
@@ -129,7 +129,7 @@ exe = EXE(pyz,
           strip=False,
           upx=False,
           console=False,
-          icon='icons/electrum-dash.ico',
+          icon='icons/electrum-sibcoin.ico',
           name=os.path.join('build\\pyi.win32\\electrum', cmdline_name))
 
 # exe with console output
@@ -140,7 +140,7 @@ conexe = EXE(pyz,
           strip=False,
           upx=False,
           console=True,
-          icon='icons/electrum-dash.ico',
+          icon='icons/electrum-sibcoin.ico',
           name=os.path.join('build\\pyi.win32\\electrum',
                             'console-%s' % cmdline_name))
 
@@ -169,4 +169,4 @@ coll = COLLECT(exe, conexe, #tctl_exe,
                a.datas,
                strip=False,
                upx=False,
-               name=os.path.join('dist', 'electrum-dash'))
+               name=os.path.join('dist', 'electrum-sibcoin'))

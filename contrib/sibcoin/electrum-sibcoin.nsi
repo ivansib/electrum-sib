@@ -7,9 +7,9 @@
 ;--------------------------------
 ;Variables
 
-  !define PRODUCT_NAME "Dash-Electrum"
-  !define PREV_PROD_NAME "Electrum-DASH"
-  !define PRODUCT_WEB_SITE "https://github.com/akhavr/electrum-dash"
+  !define PRODUCT_NAME "Sibcoin-Electrum"
+  !define PREV_PROD_NAME "Electrum-SIBCOIN"
+  !define PRODUCT_WEB_SITE "https://github.com/ivansib/electrum-sib"
   !define PRODUCT_PUBLISHER "Electrum Technologies GmbH"
   !define PRODUCT_UNINST_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}"
   !define PREV_PROD_UNINST_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PREV_PROD_NAME}"
@@ -77,7 +77,7 @@
   !define MUI_ABORTWARNING
   !define MUI_ABORTWARNING_TEXT "Are you sure you wish to abort the installation of ${PRODUCT_NAME}?"
   
-  !define MUI_ICON "icons\electrum-dash.ico"
+  !define MUI_ICON "icons\electrum-sibcoin.ico"
   
 ;--------------------------------
 ;Pages
@@ -117,7 +117,7 @@ Function .onInit
     ${EndIf}
 FunctionEnd
 
-Section "Dash-Electrum" SectionDE
+Section "Sibcoin-Electrum" SectionDE
   SetOutPath $INSTDIR
 
   ;Uninstall prev product name versions
@@ -130,7 +130,7 @@ Section "Dash-Electrum" SectionDE
     Delete "$SMPROGRAMS\${PREV_PROD_NAME}\*.*"
     RMDir  "$SMPROGRAMS\${PREV_PROD_NAME}"
 
-    DeleteRegKey HKCU "Software\Classes\dash"
+    DeleteRegKey HKCU "Software\Classes\sibcoin"
     DeleteRegKey HKCU "Software\${PREV_PROD_NAME}"
     DeleteRegKey HKCU "${PREV_PROD_UNINST_KEY}"
   ${EndIf}
@@ -141,8 +141,8 @@ Section "Dash-Electrum" SectionDE
   Delete "$SMPROGRAMS\${PRODUCT_NAME}\*.*"
 
   ;Files to pack into the installer
-  File /r "dist\electrum-dash\*.*"
-  File "icons\electrum-dash.ico"
+  File /r "dist\electrum-sibcoin\*.*"
+  File "icons\electrum-sibcoin.ico"
 
   ;Store installation folder
   WriteRegStr HKCU "Software\${PRODUCT_NAME}" "" $INSTDIR
@@ -153,21 +153,21 @@ Section "Dash-Electrum" SectionDE
 
   ;Create desktop shortcut
   DetailPrint "Creating desktop shortcut..."
-  CreateShortCut "$DESKTOP\${PRODUCT_NAME}.lnk" "$INSTDIR\electrum-dash-${PRODUCT_VERSION}.exe" ""
+  CreateShortCut "$DESKTOP\${PRODUCT_NAME}.lnk" "$INSTDIR\electrum-sibcoin-${PRODUCT_VERSION}.exe" ""
 
   ;Create start-menu items
   DetailPrint "Creating start-menu items..."
   CreateDirectory "$SMPROGRAMS\${PRODUCT_NAME}"
   CreateShortCut "$SMPROGRAMS\${PRODUCT_NAME}\Uninstall.lnk" "$INSTDIR\Uninstall.exe" "" "$INSTDIR\Uninstall.exe" 0
-  CreateShortCut "$SMPROGRAMS\${PRODUCT_NAME}\${PRODUCT_NAME}.lnk" "$INSTDIR\electrum-dash-${PRODUCT_VERSION}.exe" "" "$INSTDIR\electrum-dash-${PRODUCT_VERSION}.exe" 0
-  CreateShortCut "$SMPROGRAMS\${PRODUCT_NAME}\${PRODUCT_NAME} Testnet.lnk" "$INSTDIR\electrum-dash-${PRODUCT_VERSION}.exe" "--testnet" "$INSTDIR\electrum-dash-${PRODUCT_VERSION}.exe" 0
+  CreateShortCut "$SMPROGRAMS\${PRODUCT_NAME}\${PRODUCT_NAME}.lnk" "$INSTDIR\electrum-sibcoin-${PRODUCT_VERSION}.exe" "" "$INSTDIR\electrum-sibcoin-${PRODUCT_VERSION}.exe" 0
+  CreateShortCut "$SMPROGRAMS\${PRODUCT_NAME}\${PRODUCT_NAME} Testnet.lnk" "$INSTDIR\electrum-sibcoin-${PRODUCT_VERSION}.exe" "--testnet" "$INSTDIR\electrum-sibcoin-${PRODUCT_VERSION}.exe" 0
 
 
-  ;Links dash: URI's to Electrum
-  WriteRegStr HKCU "Software\Classes\dash" "" "URL:dash Protocol"
-  WriteRegStr HKCU "Software\Classes\dash" "URL Protocol" ""
-  WriteRegStr HKCU "Software\Classes\dash" "DefaultIcon" "$\"$INSTDIR\electrum-dash.ico, 0$\""
-  WriteRegStr HKCU "Software\Classes\dash\shell\open\command" "" "$\"$INSTDIR\electrum-dash-${PRODUCT_VERSION}.exe$\" $\"%1$\""
+  ;Links sibcoin: URI's to Electrum
+  WriteRegStr HKCU "Software\Classes\sibcoin" "" "URL:sibcoin Protocol"
+  WriteRegStr HKCU "Software\Classes\sibcoin" "URL Protocol" ""
+  WriteRegStr HKCU "Software\Classes\sibcoin" "DefaultIcon" "$\"$INSTDIR\electrum-sibcoin.ico, 0$\""
+  WriteRegStr HKCU "Software\Classes\sibcoin\shell\open\command" "" "$\"$INSTDIR\electrum-sibcoin-${PRODUCT_VERSION}.exe$\" $\"%1$\""
 
   ;Adds an uninstaller possibility to Windows Uninstall or change a program section
   WriteRegStr HKCU "${PRODUCT_UNINST_KEY}" "DisplayName" "$(^Name)"
@@ -175,7 +175,7 @@ Section "Dash-Electrum" SectionDE
   WriteRegStr HKCU "${PRODUCT_UNINST_KEY}" "DisplayVersion" "${PRODUCT_VERSION}"
   WriteRegStr HKCU "${PRODUCT_UNINST_KEY}" "URLInfoAbout" "${PRODUCT_WEB_SITE}"
   WriteRegStr HKCU "${PRODUCT_UNINST_KEY}" "Publisher" "${PRODUCT_PUBLISHER}"
-  WriteRegStr HKCU "${PRODUCT_UNINST_KEY}" "DisplayIcon" "$INSTDIR\electrum-dash.ico"
+  WriteRegStr HKCU "${PRODUCT_UNINST_KEY}" "DisplayIcon" "$INSTDIR\electrum-sibcoin.ico"
 
   ;Fixes Windows broken size estimates
   ${GetSize} "$INSTDIR" "/S=0K" $0 $1 $2
@@ -192,7 +192,7 @@ SectionEnd
 
 ;--------------------------------
 ;Descriptions
-LangString DESC_DE ${LANG_ENGLISH} "Dash-Electrum Wallet"
+LangString DESC_DE ${LANG_ENGLISH} "Sibcoin-Electrum Wallet"
 LangString DESC_TOR ${LANG_ENGLISH} "The Tor Project Socks Proxy"
 
 !insertmacro MUI_FUNCTION_DESCRIPTION_BEGIN
@@ -212,7 +212,7 @@ Section "Uninstall"
   Delete "$SMPROGRAMS\${PRODUCT_NAME}\*.*"
   RMDir  "$SMPROGRAMS\${PRODUCT_NAME}"
   
-  DeleteRegKey HKCU "Software\Classes\dash"
+  DeleteRegKey HKCU "Software\Classes\sibcoin"
   DeleteRegKey HKCU "Software\${PRODUCT_NAME}"
   DeleteRegKey HKCU "${PRODUCT_UNINST_KEY}"
 SectionEnd
