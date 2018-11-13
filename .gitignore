@@ -26,3 +26,4 @@ electrum_dash/gui/kivy/theming/light.atlas
 *.egg-info/
 
 .idea/
+x11_gost_hash/
