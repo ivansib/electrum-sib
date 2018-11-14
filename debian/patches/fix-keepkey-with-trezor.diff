@@ -1,7 +1,7 @@
-Index: electrum-dash-3.x.x/electrum-dash
+Index: electrum-sibcoin-3.x.x/electrum-sibcoin
 ===================================================================
---- electrum-dash-3.x.x.orig/electrum-dash	2018-06-12 22:15:35.699293303 +0300
-+++ electrum-dash-3.x.x/electrum-dash	2018-06-12 22:20:02.122480853 +0300
+--- electrum-sibcoin-3.x.x.orig/electrum-sibcoin	2018-06-12 22:15:35.699293303 +0300
++++ electrum-sibcoin-3.x.x/electrum-sibcoin	2018-06-12 22:20:02.122480853 +0300
 @@ -26,6 +26,8 @@
  import os
  import sys
@@ -10,4 +10,4 @@ Index: electrum-dash-3.x.x/electrum-dash
 +
  script_dir = os.path.dirname(os.path.realpath(__file__))
  is_bundle = getattr(sys, 'frozen', False)
- is_local = not is_bundle and os.path.exists(os.path.join(script_dir, "electrum-dash.desktop"))
+ is_local = not is_bundle and os.path.exists(os.path.join(script_dir, "electrum-sibcoin.desktop"))

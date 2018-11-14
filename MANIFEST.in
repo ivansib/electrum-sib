@@ -1,9 +1,9 @@
 include LICENCE RELEASE-NOTES AUTHORS
 include README.rst
-include electrum-dash.conf.sample
-include electrum-dash.desktop
+include electrum-sibcoin.conf.sample
+include electrum-sibcoin.desktop
 include *.py
-include electrum-dash
+include electrum-sibcoin
 include contrib/requirements/requirements.txt
 include contrib/requirements/requirements-hw.txt
 recursive-include packages *.py
@@ -12,8 +12,8 @@ include icons.qrc
 graft debian
 graft icons
 
-graft electrum_dash
-prune electrum_dash/tests
+graft electrum_sibcoin
+prune electrum_sibcoin/tests
 
 global-exclude __pycache__
 global-exclude *.py[co]

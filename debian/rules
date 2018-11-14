@@ -1,6 +1,6 @@
 #!/usr/bin/make -f
 
-export PYBUILD_NAME=electrum-dash
+export PYBUILD_NAME=electrum-sibcoin
 
 %:
 	dh $@ --with python3 --buildsystem=pybuild
@@ -9,24 +9,24 @@ override_dh_installchangelogs::
 	dh_installchangelogs -k RELEASE-NOTES
 
 override_dh_auto_build::
-	pyrcc5 icons.qrc -o electrum_dash/gui/qt/icons_rc.py
+	pyrcc5 icons.qrc -o electrum_sibcoin/gui/qt/icons_rc.py
 	dh_auto_build
 
 override_dh_auto_install::
 	dh_auto_install
-	mkdir -p debian/electrum-dash/usr/bin \
-             debian/electrum-dash/usr/share
-	cp -r debian/python3-electrum-dash/usr/bin \
-       debian/electrum-dash/usr
-	cp -r debian/python3-electrum-dash/usr/share/applications \
-       debian/electrum-dash/usr/share
-	cp -r debian/python3-electrum-dash/usr/share/pixmaps \
-       debian/electrum-dash/usr/share
-	mkdir -p debian/dash-electrum/usr/bin \
-             debian/dash-electrum/usr/share
-	mv debian/python3-electrum-dash/usr/bin \
-       debian/dash-electrum/usr
-	mv debian/python3-electrum-dash/usr/share/applications \
-       debian/dash-electrum/usr/share
-	mv debian/python3-electrum-dash/usr/share/pixmaps \
-       debian/dash-electrum/usr/share
+	mkdir -p debian/electrum-sibcoin/usr/bin \
+             debian/electrum-sibcoin/usr/share
+	cp -r debian/python3-electrum-sibcoin/usr/bin \
+       debian/electrum-sibcoin/usr
+	cp -r debian/python3-electrum-sibcoin/usr/share/applications \
+       debian/electrum-sibcoin/usr/share
+	cp -r debian/python3-electrum-sibcoin/usr/share/pixmaps \
+       debian/electrum-sibcoin/usr/share
+	mkdir -p debian/sibcoin-electrum/usr/bin \
+             debian/sibcoin-electrum/usr/share
+	mv debian/python3-electrum-sibcoin/usr/bin \
+       debian/sibcoin-electrum/usr
+	mv debian/python3-electrum-sibcoin/usr/share/applications \
+       debian/sibcoin-electrum/usr/share
+	mv debian/python3-electrum-sibcoin/usr/share/pixmaps \
+       debian/sibcoin-electrum/usr/share

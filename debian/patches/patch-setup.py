@@ -1,12 +1,12 @@
-Index: Electrum-DASH-3.2.3/setup.py
+Index: Electrum-SIBCOIN-3.2.3/setup.py
 ===================================================================
---- Electrum-DASH-3.2.3.orig/setup.py
-+++ Electrum-DASH-3.2.3/setup.py
+--- Electrum-SIBCOIN-3.2.3.orig/setup.py
++++ Electrum-SIBCOIN-3.2.3/setup.py
 @@ -77,6 +77,7 @@ setup(
-         'electrum_dash',
-         'electrum_dash.gui',
-         'electrum_dash.gui.qt',
-+        'electrum_dash.plugins',
-     ] + [('electrum_dash.plugins.'+pkg) for pkg in find_packages('electrum_dash/plugins')],
+         'electrum_sibcoin',
+         'electrum_sibcoin.gui',
+         'electrum_sibcoin.gui.qt',
++        'electrum_sibcoin.plugins',
+     ] + [('electrum_sibcoin.plugins.'+pkg) for pkg in find_packages('electrum_sibcoin/plugins')],
      package_dir={
-         'electrum_dash': 'electrum_dash'
+         'electrum_sibcoin': 'electrum_sibcoin'

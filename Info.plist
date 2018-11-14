@@ -6,10 +6,10 @@
   <array>
     <dict>
       <key>CFBundleURLName</key>
-      <string>dash</string>
+      <string>sibcoin</string>
       <key>CFBundleURLSchemes</key>
       <array>
-        <string>dash</string>
+        <string>sibcoin</string>
       </array>
     </dict>
   </array>

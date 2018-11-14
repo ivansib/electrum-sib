@@ -1,21 +1,21 @@
-# If you want Dash-Electrum to appear in a Linux app launcher ("start menu"), install this by doing:
-# sudo desktop-file-install electrum-dash.desktop
+# If you want Sibcoin-Electrum to appear in a Linux app launcher ("start menu"), install this by doing:
+# sudo desktop-file-install electrum-sibcoin.desktop
 
 [Desktop Entry]
-Comment=Dash-Electrum Wallet
-Exec=sh -c "PATH=\"\\$HOME/.local/bin:\\$PATH\" electrum-dash %u"
-GenericName[en_US]=Dash-Electrum
-GenericName=Dash-Electrum
-Icon=electrum-dash
-Name[en_US]=Dash-Electrum Wallet
-Name=Dash-Electrum Wallet
+Comment=Sibcoin-Electrum Wallet
+Exec=sh -c "PATH=\"\\$HOME/.local/bin:\\$PATH\" electrum-sibcoin %u"
+GenericName[en_US]=Sibcoin-Electrum
+GenericName=Sibcoin-Electrum
+Icon=electrum-sibcoin
+Name[en_US]=Sibcoin-Electrum Wallet
+Name=Sibcoin-Electrum Wallet
 Categories=Network;
 StartupNotify=false
 Terminal=false
 Type=Application
-MimeType=x-scheme-handler/dashpay;
+MimeType=x-scheme-handler/sibcoinpay;
 Actions=Testnet;
 
 [Desktop Action Testnet]
-Exec=sh -c "PATH=\"\\$HOME/.local/bin:\\$PATH\" electrum-dash --testnet %u"
+Exec=sh -c "PATH=\"\\$HOME/.local/bin:\\$PATH\" electrum-sibcoin --testnet %u"
 Name=Testnet mode
