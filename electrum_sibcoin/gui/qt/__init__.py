@@ -98,7 +98,7 @@ class ElectrumGui:
         if hasattr(QtCore.Qt, "AA_ShareOpenGLContexts"):
             QtCore.QCoreApplication.setAttribute(QtCore.Qt.AA_ShareOpenGLContexts)
         if hasattr(QGuiApplication, 'setDesktopFileName'):
-            QGuiApplication.setDesktopFileName('electrum-dash.desktop')
+            QGuiApplication.setDesktopFileName('electrum-sibcoin.desktop')
         self.config = config
         self.daemon = daemon
         self.plugins = plugins
@@ -112,7 +112,7 @@ class ElectrumGui:
         # init tray
         self.dark_icon = self.config.get("dark_icon", False)
         self.tray = QSystemTrayIcon(self.tray_icon(), None)
-        self.tray.setToolTip('Dash-Electrum')
+        self.tray.setToolTip('Sibcoin-Electrum')
         self.tray.activated.connect(self.tray_activated)
         self.build_tray_menu()
         self.tray.show()
@@ -124,11 +124,11 @@ class ElectrumGui:
         use_dark_theme = self.config.get('qt_gui_color_theme', 'default') == 'dark'
         self.app.setStyle('Fusion')
         if use_dark_theme:
-            from .dark_dash_style import dash_stylesheet
-            self.app.setStyleSheet(dash_stylesheet)
+            from .dark_sibcoin_style import sibcoin_stylesheet
+            self.app.setStyleSheet(sibcoin_stylesheet)
         else:
-            from .dash_style import dash_stylesheet
-            self.app.setStyleSheet(dash_stylesheet)
+            from .sibcoin_style import sibcoin_stylesheet
+            self.app.setStyleSheet(sibcoin_stylesheet)
         # Even if we ourselves don't set the dark theme,
         # the OS/window manager/etc might set *a dark theme*.
         # Hence, try to choose colors accordingly:
@@ -148,7 +148,7 @@ class ElectrumGui:
             submenu.addAction(_("Close"), window.close)
         m.addAction(_("Dark/Light"), self.toggle_tray_icon)
         m.addSeparator()
-        m.addAction(_("Exit Dash-Electrum"), self.close)
+        m.addAction(_("Exit Sibcoin-Electrum"), self.close)
 
     def tray_icon(self):
         if self.dark_icon:
@@ -180,7 +180,7 @@ class ElectrumGui:
 
     def show_network_dialog(self, parent):
         if not self.daemon.network:
-            parent.show_warning(_('You are using Dash-Electrum in offline mode; restart Dash-Electrum if you want to get connected'), title=_('Offline'))
+            parent.show_warning(_('You are using Sibcoin-Electrum in offline mode; restart Sibcoin-Electrum if you want to get connected'), title=_('Offline'))
             return
         if self.nd:
             self.nd.on_update()

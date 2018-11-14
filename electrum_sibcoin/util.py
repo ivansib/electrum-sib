@@ -355,7 +355,7 @@ def android_data_dir():
     return PythonActivity.mActivity.getFilesDir().getPath() + '/data'
 
 def android_headers_dir():
-    d = android_ext_dir() + '/org.dash.electrum.electrum_sibcoin'
+    d = android_ext_dir() + '/org.sibcoin.electrum.electrum_sibcoin'
     if not os.path.exists(d):
         try:
             os.mkdir(d)
@@ -367,7 +367,7 @@ def android_check_data_dir():
     """ if needed, move old directory to sandbox """
     ext_dir = android_ext_dir()
     data_dir = android_data_dir()
-    old_electrum_dir = ext_dir + '/electrum-dash'
+    old_electrum_dir = ext_dir + '/electrum-sibcoin'
     if not os.path.exists(data_dir) and os.path.exists(old_electrum_dir):
         import shutil
         new_headers_path = android_headers_dir() + '/blockchain_headers'
@@ -390,7 +390,7 @@ def assert_datadir_available(config_path):
         return
     else:
         raise FileNotFoundError(
-            'Dash-Electrum datadir does not exist. Was it deleted while running?' + '\n' +
+            'Sibcoin-Electrum datadir does not exist. Was it deleted while running?' + '\n' +
             'Should be at {}'.format(path))
 
 
@@ -637,12 +637,12 @@ def parse_URI(uri, on_pr=None):
 
     if ':' not in uri:
         if not bitcoin.is_address(uri):
-            raise Exception("Not a Dash address")
+            raise Exception("Not a Sibcoin address")
         return {'address': uri}
 
     u = urllib.parse.urlparse(uri)
-    if u.scheme != 'dash':
-        raise Exception("Not a Dash URI")
+    if u.scheme != 'sibcoin':
+        raise Exception("Not a Sibcoin URI")
     address = u.path
 
     # python for android fails to parse query
@@ -659,7 +659,7 @@ def parse_URI(uri, on_pr=None):
     out = {k: v[0] for k, v in pq.items()}
     if address:
         if not bitcoin.is_address(address):
-            raise Exception("Invalid Dash address:" + address)
+            raise Exception("Invalid Sibcoin address:" + address)
         out['address'] = address
     if 'amount' in out:
         am = out['amount']
@@ -709,7 +709,7 @@ def create_URI(addr, amount, message):
         query.append('amount=%s'%format_satoshis_plain(amount))
     if message:
         query.append('message=%s'%urllib.parse.quote(message))
-    p = urllib.parse.ParseResult(scheme='dash', netloc='', path=addr, params='', query='&'.join(query), fragment='')
+    p = urllib.parse.ParseResult(scheme='sibcoin', netloc='', path=addr, params='', query='&'.join(query), fragment='')
     return urllib.parse.urlunparse(p)
 
 

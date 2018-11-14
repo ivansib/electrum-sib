@@ -67,7 +67,7 @@ class GuiMixin(object):
             msg = _("Enter a passphrase to generate this wallet.  Each time "
                     "you use this wallet your {} will prompt you for the "
                     "passphrase.  If you forget the passphrase you cannot "
-                    "access the Dash coins in the wallet.").format(self.device)
+                    "access the Sibcoin coins in the wallet.").format(self.device)
         else:
             msg = _("Enter the passphrase to unlock this wallet:")
         passphrase = self.handler.get_passphrase(msg, self.creating_wallet)
@@ -123,8 +123,8 @@ class SafeTClientBase(GuiMixin, PrintError):
 
     def has_usable_connection_with_device(self):
         try:
-            res = self.ping("electrum-dash pinging device")
-            assert res == "electrum-dash pinging device"
+            res = self.ping("electrum-sibcoin pinging device")
+            assert res == "electrum-sibcoin pinging device"
         except BaseException:
             return False
         return True

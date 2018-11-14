@@ -1,4 +1,4 @@
-package org.dash.electrum.qr;
+package org.sibcoin.electrum.qr;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -14,7 +14,7 @@ import com.google.zxing.BarcodeFormat;
 
 public class SimpleScannerActivity extends Activity implements ZXingScannerView.ResultHandler {
     private ZXingScannerView mScannerView;
-    final String TAG = "org.dash.electrum.SimpleScannerActivity";
+    final String TAG = "org.sibcoin.electrum.SimpleScannerActivity";
 
     @Override
     public void onCreate(Bundle state) {

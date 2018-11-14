@@ -8,7 +8,7 @@ from electrum_sibcoin import bitcoin
 try:
     addr = sys.argv[1]
 except Exception:
-    print("usage: get_history <dash_address>")
+    print("usage: get_history <sibcoin_address>")
     sys.exit(1)
 
 n = Network()

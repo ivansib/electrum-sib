@@ -9,7 +9,7 @@ from electrum_sibcoin.util import print_msg, json_encode
 try:
     addr = sys.argv[1]
 except Exception:
-    print("usage: watch_address <dash_address>")
+    print("usage: watch_address <sibcoin_address>")
     sys.exit(1)
 
 sh = bitcoin.address_to_scripthash(addr)

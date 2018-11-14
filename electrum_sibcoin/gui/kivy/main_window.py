@@ -139,7 +139,7 @@ class ElectrumWindow(App):
         self.send_screen.set_URI(uri)
 
     def on_new_intent(self, intent):
-        if intent.getScheme() != 'dash':
+        if intent.getScheme() != 'sibcoin':
             return
         uri = intent.getDataString()
         self.set_URI(uri)
@@ -256,7 +256,7 @@ class ElectrumWindow(App):
 
         App.__init__(self)#, **kwargs)
 
-        title = _('Dash-Electrum App')
+        title = _('Sibcoin-Electrum App')
         self.electrum_config = config = kwargs.get('config', None)
         self.language = config.get('language', 'en')
         self.network = network = kwargs.get('network', None)
@@ -319,7 +319,7 @@ class ElectrumWindow(App):
         if is_address(data):
             self.set_URI(data)
             return
-        if data.startswith('dash:'):
+        if data.startswith('sibcoin:'):
             self.set_URI(data)
             return
         # try to decode transaction
@@ -413,7 +413,7 @@ class ElectrumWindow(App):
         from jnius import autoclass, cast
         from android import activity
         PythonActivity = autoclass('org.kivy.android.PythonActivity')
-        SimpleScannerActivity = autoclass("org.dash.electrum.qr.SimpleScannerActivity")
+        SimpleScannerActivity = autoclass("org.sibcoin.electrum.qr.SimpleScannerActivity")
         Intent = autoclass('android.content.Intent')
         intent = Intent(PythonActivity.mActivity, SimpleScannerActivity)
 
@@ -474,7 +474,7 @@ class ElectrumWindow(App):
         self.fiat_unit = self.fx.ccy if self.fx.is_enabled() else ''
         # default tab
         self.switch_to('history')
-        # bind intent for dash: URI scheme
+        # bind intent for sibcoin: URI scheme
         if platform == 'android':
             from android import activity
             from jnius import autoclass
@@ -554,7 +554,7 @@ class ElectrumWindow(App):
             else:
                 self.load_wallet(wallet)
         else:
-            Logger.debug('Dash-Electrum: Wallet not found or action needed. Launching install wizard')
+            Logger.debug('Sibcoin-Electrum: Wallet not found or action needed. Launching install wizard')
 
             def launch_wizard():
                 storage = WalletStorage(path, manual_upgrades=True)
@@ -676,7 +676,7 @@ class ElectrumWindow(App):
         self.receive_screen = None
         self.requests_screen = None
         self.address_screen = None
-        self.icon = "icons/electrum-dash.png"
+        self.icon = "icons/electrum-sibcoin.png"
         self.tabs = self.root.ids['tabs']
 
     def update_interfaces(self, dt):
@@ -781,8 +781,8 @@ class ElectrumWindow(App):
                 from plyer import notification
             icon = (os.path.dirname(os.path.realpath(__file__))
                     + '/../../' + self.icon)
-            notification.notify('Dash-Electrum', message,
-                            app_icon=icon, app_name='Dash-Electrum')
+            notification.notify('Sibcoin-Electrum', message,
+                            app_icon=icon, app_name='Sibcoin-Electrum')
         except ImportError:
             Logger.Error('Notification: needs plyer; `sudo pip install plyer`')
 

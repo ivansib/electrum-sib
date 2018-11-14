@@ -17,7 +17,7 @@ class ElectrumGui:
         self.network = daemon.network
         storage = WalletStorage(config.get_wallet_path())
         if not storage.file_exists:
-            print("Wallet not found. try 'electrum-dash create'")
+            print("Wallet not found. try 'electrum-sibcoin create'")
             exit()
         if storage.is_encrypted():
             password = getpass.getpass('Password:', stream=None)
@@ -164,7 +164,7 @@ class ElectrumGui:
 
     def do_send(self):
         if not is_address(self.str_recipient):
-            print(_('Invalid Dash address'))
+            print(_('Invalid Sibcoin address'))
             return
         try:
             amount = int(Decimal(self.str_amount) * COIN)
@@ -210,12 +210,12 @@ class ElectrumGui:
             print(_('Error'))
 
     def network_dialog(self):
-        print("use 'electrum-dash setconfig server/proxy' to change your network settings")
+        print("use 'electrum-sibcoin setconfig server/proxy' to change your network settings")
         return True
 
 
     def settings_dialog(self):
-        print("use 'electrum-dash setconfig' to change your settings")
+        print("use 'electrum-sibcoin setconfig' to change your settings")
         return True
 
     def password_dialog(self):

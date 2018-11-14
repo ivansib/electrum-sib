@@ -21,7 +21,7 @@ class ElectrumGui:
         self.network = daemon.network
         storage = WalletStorage(config.get_wallet_path())
         if not storage.file_exists():
-            print("Wallet not found. try 'electrum-dash create'")
+            print("Wallet not found. try 'electrum-sibcoin create'")
             exit()
         if storage.is_encrypted():
             password = getpass.getpass('Password:', stream=None)
@@ -321,7 +321,7 @@ class ElectrumGui:
 
     def do_send(self):
         if not is_address(self.str_recipient):
-            self.show_message(_('Invalid Dash address'))
+            self.show_message(_('Invalid Sibcoin address'))
             return
         try:
             amount = int(Decimal(self.str_amount) * COIN)
