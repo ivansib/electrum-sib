@@ -94,7 +94,7 @@ def filter_noonion(servers):
     return {k: v for k, v in servers.items() if not k.endswith('.onion')}
 
 
-def filter_protocol(hostmap, protocol='t'):
+def filter_protocol(hostmap, protocol='s'):
     '''Filters the hostmap for those implementing protocol.
     The result is a list in serialized form.'''
     eligible = []
@@ -105,7 +105,7 @@ def filter_protocol(hostmap, protocol='t'):
     return eligible
 
 
-def pick_random_server(hostmap = None, protocol = 't', exclude_set = set()):
+def pick_random_server(hostmap = None, protocol = 's', exclude_set = set()):
     if hostmap is None:
         hostmap = constants.net.DEFAULT_SERVERS
     eligible = list(set(filter_protocol(hostmap, protocol)) - exclude_set)
