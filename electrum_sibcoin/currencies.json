@@ -1,18 +1,16 @@
 {
-    "BitcoinAverage": [
-        "USD",
-        "EUR",
-        "PLN"
-    ],
-    "Bittrex": [
-        "BTC",
-        "ETH"
-    ],
-    "Poloniex": [
+    "Livecoin": [
+        "RUB",
         "BTC"
     ],
-    "CoinMarketCap": [
-        "BTC",
-        "USD"
+    "Coingecko": [
+	"RUB",
+	"USD",
+	"EUR",
+	"BTC",
+	"ETH"
+    ],
+    "Bittrex": [
+        "BTC"
     ]
 }

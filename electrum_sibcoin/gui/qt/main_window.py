@@ -250,6 +250,10 @@ class ElectrumWindow(QMainWindow, MessageBoxMixin, PrintError):
         if self.fx.history_used_spot:
             self.history_list.update()
 
+        if self.fx.get_fiat_address_config():
+            self.address_list.refresh_headers()
+            self.address_list.update()
+
     def toggle_tab(self, tab):
         show = not self.config.get('show_{}_tab'.format(tab.tab_name), False)
         self.config.set_key('show_{}_tab'.format(tab.tab_name), show)
@@ -2958,12 +2962,12 @@ class ElectrumWindow(QMainWindow, MessageBoxMixin, PrintError):
             if not self.fx: return
             b = self.fx.is_enabled()
             ex_combo.setEnabled(b)
+            c = self.fx.get_currency()
             if b:
                 h = self.fx.get_history_config()
-                c = self.fx.get_currency()
                 exchanges = self.fx.get_exchanges_by_ccy(c, h)
             else:
-                exchanges = self.fx.get_exchanges_by_ccy('USD', False)
+                exchanges = self.fx.get_exchanges_by_ccy(c, False)
             ex_combo.clear()
             ex_combo.addItems(sorted(exchanges))
             ex_combo.setCurrentIndex(ex_combo.findText(self.fx.config_exchange()))

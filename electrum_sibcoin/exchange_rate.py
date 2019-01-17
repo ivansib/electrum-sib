@@ -26,8 +26,8 @@ CCY_PRECISIONS = {'BHD': 3, 'BIF': 0, 'BYR': 0, 'CLF': 4, 'CLP': 0,
                   'BTC': 8, 'ETH': 8}
 
 
-DEFAULT_EXCHANGE = 'BitcoinAverage'
-DEFAULT_CCY = 'USD'
+DEFAULT_EXCHANGE = 'Livecoin'
+DEFAULT_CCY = 'RUB'
 
 
 class ExchangeBase(PrintError):
@@ -122,60 +122,65 @@ class ExchangeBase(PrintError):
         rates = self.get_rates('')
         return sorted([str(a) for (a, b) in rates.items() if b is not None and len(a)==3])
 
-
-class BitcoinAverage(ExchangeBase):
-
+class Livecoin(ExchangeBase):
     def get_rates(self, ccy):
-        json = self.get_json('apiv2.bitcoinaverage.com',
-                             '/indices/local/ticker/DASH%s' % ccy)
-        return {ccy: Decimal(json['last'])}
+        corCcy = self.correctCcy(ccy)
+        json = self.get_json('api.livecoin.net',
+                             '/exchange/ticker?currencyPair=SIB/%s' % corCcy)
+        quote_currencies = {}
+        max_bid = Decimal(json['max_bid'])
+        quote_currencies[ccy] = max_bid
+        return quote_currencies
+    
+    def correctCcy(self, ccy):
+        if ccy == "RUB":
+            return "RUR"
+        return ccy
 
+class Coingecko(ExchangeBase):
+    def get_rates(self, ccy):
+        json = self.get_json('api.coingecko.com',
+                             '/api/v3/coins/sibcoin/market_chart?vs_currency=%s&days=1' % ccy)
+        
+        quote_currencies = {}
+        size = len(json["prices"])
+        current = Decimal(json["prices"][size - 1][1])
+        quote_currencies[ccy] = current
+        return quote_currencies
 
     def history_ccys(self):
-        return ['USD', 'EUR', 'PLN']
+        return ['RUB', 'USD', 'EUR', 'BTC', 'ETH']
 
     def request_history(self, ccy):
-        history = self.get_json('apiv2.bitcoinaverage.com',
-                               "/indices/local/history/DASH%s"
-                               "?period=alltime&format=json" % ccy)
-        return dict([(h['time'][:10], h['average']) for h in history])
+        t = time.time()
+        d = {}
+        isWork = True
+        while (isWork):
+            st = time.gmtime(t)
+            stForRec = time.strftime("%d-%m-%Y", st)
+            history = self.get_json('api.coingecko.com',
+                               '/api/v3/coins/sibcoin/history?date=%s' % stForRec)
 
+            if "market_data" not in history:
+                isWork = False
+            else:
+                price = history["market_data"]["current_price"][ccy.lower()]
+                stForDict = time.strftime("%Y-%m-%d", st)
+                d[stForDict] = price
+                t = t - 24 * 3600
+
+        return d
 
 class Bittrex(ExchangeBase):
     def get_rates(self, ccy):
         json = self.get_json('bittrex.com',
-                             '/api/v1.1/public/getticker?market=%s-DASH' % ccy)
+                             '/api/v1.1/public/getticker?market=%s-SIB' % ccy)
         quote_currencies = {}
         if not json.get('success', False):
             return quote_currencies
         last = Decimal(json['result']['Last'])
         quote_currencies[ccy] = last
         return quote_currencies
-
-
-class Poloniex(ExchangeBase):
-    def get_rates(self, ccy):
-        json = self.get_json('poloniex.com', '/public?command=returnTicker')
-        quote_currencies = {}
-        dash_ticker = json.get('BTC_DASH')
-        quote_currencies['BTC'] = Decimal(dash_ticker['last'])
-        return quote_currencies
-
-
-class CoinMarketCap(ExchangeBase):
-    def get_rates(self, ccy):
-        json = self.get_json('api.coinmarketcap.com', '/v1/ticker/dash/')
-        quote_currencies = {}
-        if not isinstance(json, list):
-            return quote_currencies
-        json = json[0]
-        for ccy, key in [
-            ('USD', 'price_usd'),
-            ('BTC', 'price_btc'),
-        ]:
-            quote_currencies[ccy] = Decimal(json[key])
-        return quote_currencies
-
 
 def dictinvert(d):
     inv = {}
