@@ -151,9 +151,12 @@ class Coingecko(ExchangeBase):
     def history_ccys(self):
         return ['RUB', 'USD', 'EUR', 'BTC', 'ETH']
 
-    def request_history(self, ccy):
-        t = time.time()
+    def request_history(self, ccy):        
         d = {}
+        if ccy in self.history:
+            d = self.history[ccy].copy()
+
+        t = time.time()
         isWork = True
         while (isWork):
             st = time.gmtime(t)
@@ -166,8 +169,12 @@ class Coingecko(ExchangeBase):
             else:
                 price = history["market_data"]["current_price"][ccy.lower()]
                 stForDict = time.strftime("%Y-%m-%d", st)
-                d[stForDict] = price
-                t = t - 24 * 3600
+                
+                if stForDict in d:
+                    isWork = False
+                else:
+                    d[stForDict] = price
+                    t = t - 24 * 3600
 
         return d
 
