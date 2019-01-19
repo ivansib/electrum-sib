@@ -44,6 +44,7 @@ from PyQt5.QtWidgets import (QMainWindow, QStatusBar, QTabWidget, QGridLayout,
 from electrum_sibcoin  import (keystore, simple_config, ecc, constants, util, bitcoin, commands,
                             coinchooser, paymentrequest)
 from electrum_sibcoin.bitcoin import COIN, is_address, TYPE_ADDRESS
+from electrum_sibcoin.dash_tx import DashTxError
 from electrum_sibcoin.plugin import run_hook
 from electrum_sibcoin.i18n import _
 from electrum_sibcoin.util import (format_time, format_satoshis, format_fee_satoshis,
@@ -66,6 +67,8 @@ from .fee_slider import FeeSlider
 from .util import *
 from .installwizard import WIF_HELP_TEXT
 from .masternode_dialog import MasternodeDialog
+from .dash_qt import ExtraPayloadWidget
+from .protx_qt import create_dip3_tab
 
 
 class StatusBarButton(QPushButton):
@@ -145,6 +148,7 @@ class ElectrumWindow(QMainWindow, MessageBoxMixin, PrintError):
         self.receive_tab = self.create_receive_tab()
         self.addresses_tab = self.create_addresses_tab()
         self.utxo_tab = self.create_utxo_tab()
+        self.dip3_tab = create_dip3_tab(self, wallet)
         self.console_tab = self.create_console_tab()
         self.contacts_tab = self.create_contacts_tab()
         # Disabled until API is stable.
@@ -166,6 +170,7 @@ class ElectrumWindow(QMainWindow, MessageBoxMixin, PrintError):
         add_optional_tab(tabs, self.addresses_tab, QIcon(":icons/tab_addresses.png"), _("&Addresses"), "addresses")
         add_optional_tab(tabs, self.utxo_tab, QIcon(":icons/tab_coins.png"), _("Co&ins"), "utxo")
         add_optional_tab(tabs, self.contacts_tab, QIcon(":icons/tab_contacts.png"), _("Con&tacts"), "contacts")
+        add_optional_tab(tabs, self.dip3_tab, QIcon(":icons/tab_dip3.png"), _("&DIP3"), "dip3")
         add_optional_tab(tabs, self.console_tab, QIcon(":icons/tab_console.png"), _("Con&sole"), "console")
 
         tabs.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
@@ -226,6 +231,13 @@ class ElectrumWindow(QMainWindow, MessageBoxMixin, PrintError):
         if self.network.tor_auto_on and not self.network.tor_on:
             self.show_warning(self.network.tor_warn_msg +
                               self.network.tor_docs_uri_qt, rich_text=True)
+        self.tabs.currentChanged.connect(self.on_tabs_current_changed)
+
+    @pyqtSlot()
+    def on_tabs_current_changed(self):
+        cur_widget = self.tabs.currentWidget()
+        if cur_widget == self.dip3_tab and not cur_widget.have_been_shown:
+            cur_widget.on_first_showing()
 
     def on_history(self, b):
         self.new_fx_history_signal.emit()
@@ -376,6 +388,8 @@ class ElectrumWindow(QMainWindow, MessageBoxMixin, PrintError):
         wallet.thread = TaskThread(self, self.on_error)
         self.wallet = wallet
         self.masternode_manager = MasternodeManager(self.wallet, self.config)
+        self.dip3_tab.w_model.reload_data()
+        self.dip3_tab.update_wallet_label()
         self.update_recently_visited(wallet.storage.path)
         # address used to create a dummy transaction and estimate transaction fee
         self.history_list.update()
@@ -552,6 +566,7 @@ class ElectrumWindow(QMainWindow, MessageBoxMixin, PrintError):
         add_toggle_action(view_menu, self.addresses_tab)
         add_toggle_action(view_menu, self.utxo_tab)
         add_toggle_action(view_menu, self.contacts_tab)
+        add_toggle_action(view_menu, self.dip3_tab)
         add_toggle_action(view_menu, self.console_tab)
 
         wallet_menu.addSeparator()
@@ -1149,6 +1164,15 @@ class ElectrumWindow(QMainWindow, MessageBoxMixin, PrintError):
               + _('A suggested fee is automatically added to this field. You may override it. The suggested fee increases with the size of the transaction.')
         self.fee_e_label = HelpLabel(_('Fee'), msg)
 
+        self.extra_payload = ExtraPayloadWidget(self)
+        self.extra_payload.hide()
+        msg = _('Extra payload.') + '\n\n'\
+              + _('Dash DIP2 Special Transations extra payload.')
+        self.extra_payload_label = HelpLabel(_('Extra payload'), msg)
+        self.extra_payload_label.hide()
+        grid.addWidget(self.extra_payload_label, 7, 0)
+        grid.addWidget(self.extra_payload, 7, 1, 1, -1)
+
         def fee_cb(dyn, pos, fee_rate):
             if dyn:
                 if self.config.use_mempool_fees():
@@ -1356,10 +1380,12 @@ class ElectrumWindow(QMainWindow, MessageBoxMixin, PrintError):
                 _type, addr = self.get_payto_or_dummy()
                 outputs = [TxOutput(_type, addr, amount)]
             is_sweep = bool(self.tx_external_keypairs)
+            tx_type, extra_payload = self.extra_payload.get_extra_data()
             make_tx = lambda fee_est: \
                 self.wallet.make_unsigned_transaction(
                     self.get_coins(), outputs, self.config,
-                    fixed_fee=fee_est, is_sweep=is_sweep)
+                    fixed_fee=fee_est, is_sweep=is_sweep,
+                    tx_type=tx_type, extra_payload=extra_payload)
             try:
                 tx = make_tx(fee_estimator)
                 self.not_enough_funds = False
@@ -1546,7 +1572,8 @@ class ElectrumWindow(QMainWindow, MessageBoxMixin, PrintError):
 
         fee_estimator = self.get_send_fee_estimator()
         coins = self.get_coins()
-        return outputs, fee_estimator, label, coins
+        tx_type, extra_payload = self.extra_payload.get_extra_data()
+        return outputs, fee_estimator, label, coins, tx_type, extra_payload
 
     def do_preview(self):
         self.do_send(preview = True)
@@ -1557,12 +1584,13 @@ class ElectrumWindow(QMainWindow, MessageBoxMixin, PrintError):
         r = self.read_send_tab()
         if not r:
             return
-        outputs, fee_estimator, tx_desc, coins = r
+        outputs, fee_estimator, tx_desc, coins, tx_type, extra_payload = r
         try:
             is_sweep = bool(self.tx_external_keypairs)
             tx = self.wallet.make_unsigned_transaction(
                 coins, outputs, self.config, fixed_fee=fee_estimator,
-                is_sweep=is_sweep)
+                is_sweep=is_sweep,
+                tx_type=tx_type, extra_payload=extra_payload)
         except NotEnoughFunds:
             self.show_message(_("Insufficient funds"))
             return
@@ -1570,6 +1598,12 @@ class ElectrumWindow(QMainWindow, MessageBoxMixin, PrintError):
             traceback.print_exc(file=sys.stdout)
             self.show_message(str(e))
             return
+        if tx.tx_type:
+            try:
+                tx.extra_payload.check_after_tx_prepared(tx)
+            except DashTxError as e:
+                self.show_message(str(e))
+                return
 
         amount = tx.output_value() if self.is_max else sum(map(lambda x:x[2], outputs))
         fee = tx.get_fee()
@@ -1795,6 +1829,8 @@ class ElectrumWindow(QMainWindow, MessageBoxMixin, PrintError):
         self.feerounding_icon.setVisible(False)
         self.set_pay_from([])
         self.tx_external_keypairs = {}
+        self.extra_payload.clear()
+        self.hide_extra_payload()
         self.update_status()
         run_hook('do_clear', self)
 
@@ -1860,6 +1896,14 @@ class ElectrumWindow(QMainWindow, MessageBoxMixin, PrintError):
             return self.pay_from
         else:
             return self.wallet.get_spendable_coins(None, self.config)
+
+    def hide_extra_payload(self):
+        self.extra_payload.hide()
+        self.extra_payload_label.hide()
+
+    def show_extra_payload(self):
+        self.extra_payload.show()
+        self.extra_payload_label.show()
 
     def spend_coins(self, coins):
         self.set_pay_from(coins)
@@ -2823,6 +2867,19 @@ class ElectrumWindow(QMainWindow, MessageBoxMixin, PrintError):
         unit_combo.currentIndexChanged.connect(lambda x: on_unit(x, nz))
         gui_widgets.append((unit_label, unit_combo))
 
+        msg = _('Display DIP2 special transactions type name as separete '
+                'column in wallet history')
+        show_dip2_ex_label = HelpLabel('Show DIP2 tx type in wallet history:', msg)
+        show_dip2_cb = QCheckBox()
+        show_dip2_cb.setChecked(self.config.get('show_dip2_tx_type', False))
+        def on_dip2_state_changed(x):
+            show_dip2 = (x == Qt.Checked)
+            self.config.set_key('show_dip2_tx_type', show_dip2, True)
+            self.history_list.refresh_headers()
+            self.history_list.update()
+        show_dip2_cb.stateChanged.connect(on_dip2_state_changed)
+        gui_widgets.append((show_dip2_ex_label, show_dip2_cb))
+
         block_explorers = sorted(util.block_explorer_info().keys())
         msg = _('Choose which online block explorer to use for functions that open a web browser')
         block_ex_label = HelpLabel(_('Online Block Explorer') + ':', msg)
@@ -3083,6 +3140,7 @@ class ElectrumWindow(QMainWindow, MessageBoxMixin, PrintError):
         self.wallet.thread.stop()
         if self.network:
             self.network.unregister_callback(self.on_network)
+        self.wallet.protx_manager.clean_up()
         self.config.set_key("is_maximized", self.isMaximized())
         if not self.isMaximized():
             g = self.geometry()

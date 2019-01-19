@@ -225,6 +225,9 @@ class Network(util.DaemonThread):
         self.recent_servers_lock = threading.RLock()       # <- re-entrant
         self.subscribed_addresses_lock = threading.Lock()
         self.blockchains_lock = threading.Lock()
+        self.protx_diff_resp_lock = threading.Lock()
+        self.protx_info_resp_lock = threading.Lock()
+        self.broadcast_txids_lock = threading.Lock()
 
         self.pending_sends = []
         self.message_id = 0
@@ -267,6 +270,10 @@ class Network(util.DaemonThread):
         self.socket_queue = queue.Queue()
         self.start_network(deserialize_server(self.default_server)[2],
                            deserialize_proxy(self.config.get('proxy')))
+
+        self.protx_diff_resp = []
+        self.protx_info_resp = []
+        self.broadcast_txids = []
 
     def with_interface_lock(func):
         def func_wrapper(self, *args, **kwargs):
@@ -404,6 +411,26 @@ class Network(util.DaemonThread):
             value = self.get_servers()
         elif key == 'interfaces':
             value = self.get_interfaces()
+        elif key == 'protx-diff':
+            with self.protx_diff_resp_lock:
+                if self.protx_diff_resp:
+                    value = self.protx_diff_resp.pop()
+                else:
+                    value = {}
+        elif key == 'protx-info':
+            with self.protx_info_resp_lock:
+                if self.protx_info_resp:
+                    value = self.protx_info_resp.pop()
+                else:
+                    value = {}
+        elif key == 'broadcast-txid':
+            with self.broadcast_txids_lock:
+                if self.broadcast_txids:
+                    value = self.broadcast_txids.pop()
+                else:
+                    value = ''
+        else:
+            value = None
         return value
 
     def notify(self, key):
@@ -686,7 +713,18 @@ class Network(util.DaemonThread):
         elif method == 'blockchain.block.headers':
             self.on_block_headers(interface, response)
         elif method == 'blockchain.block.header':
-            self.on_get_header(interface, response)
+            self.on_block_header(interface, response)
+        elif method == 'protx.diff':
+            with self.protx_diff_resp_lock:
+                self.protx_diff_resp.insert(0, {'error': error,
+                                                'result': result,
+                                                'params': params})
+            self.notify('protx-diff')
+        elif method == 'protx.info':
+            with self.protx_info_resp_lock:
+                self.protx_info_resp.insert(0, {'error': error,
+                                                'result': result})
+            self.notify('protx-info')
 
         for callback in callbacks:
             callback(response)
@@ -938,8 +976,12 @@ class Network(util.DaemonThread):
             interface.print_error(response)
             self.connection_down(interface.server)
             return
-        height = interface.request
-        header = blockchain.deserialize_header(bytes.fromhex(header), height)
+        height = header.get('block_height')
+        #interface.print_error('got header', height, blockchain.hash_header(header))
+        if interface.request != height:
+            interface.print_error("unsolicited header",interface.request, height)
+            self.connection_down(interface.server)
+            return
         chain = blockchain.check_header(header)
         if interface.mode == 'backward':
             can_connect = blockchain.can_connect(header)
@@ -1265,7 +1307,7 @@ class Network(util.DaemonThread):
         invocation(callback)
 
     def request_header(self, interface, height):
-        self.queue_request('blockchain.block.header', [height], interface)
+        self.queue_request('blockchain.block.get_header', [height], interface)
         interface.request = height
         interface.req_time = time.time()
 
@@ -1310,6 +1352,11 @@ class Network(util.DaemonThread):
 
         if out != transaction.txid():
             return False, "error: " + out
+
+        with self.broadcast_txids_lock:
+            self.broadcast_txids.insert(0, transaction.txid())
+
+        self.notify('broadcast-txid')
 
         return True, out
 
@@ -1406,6 +1453,27 @@ class Network(util.DaemonThread):
             except socket.error:
                 continue
         return "%s:%s:%s::" % detected if detected else None
+
+    def request_protx_diff(self, base_height):
+        '''
+        Request a diff between two deterministic masternode lists.
+        The result also contains proof data.
+
+        base_height: The starting block height (starting from 1).
+        height: The ending block height.
+        '''
+        height = self.get_server_height()
+        if not height:
+            return
+        self.queue_request('protx.diff', [base_height, height])
+
+    def request_protx_info(self, protx_hash):
+        '''
+        Request detailed information about a deterministic masternode.
+
+        protx_hash: The hash of the initial ProRegTx
+        '''
+        self.queue_request('protx.info', [protx_hash])
 
 #    def on_proposals(self, result):
 #        """Handle new information on all budget proposals."""
