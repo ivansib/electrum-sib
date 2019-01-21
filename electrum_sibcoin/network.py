@@ -685,7 +685,7 @@ class Network(util.DaemonThread):
                 self.print_error("relayfee", self.relay_fee)
         elif method == 'blockchain.block.headers':
             self.on_block_headers(interface, response)
-        elif method == 'blockchain.block.get_header':
+        elif method == 'blockchain.block.header':
             self.on_get_header(interface, response)
 
         for callback in callbacks:
@@ -831,7 +831,7 @@ class Network(util.DaemonThread):
         # server.version should be the first message
         params = [ELECTRUM_VERSION, PROTOCOL_VERSION]
         self.queue_request('server.version', params, interface)
-        self.queue_request('blockchain.headers.subscribe', [True], interface)
+        self.queue_request('blockchain.headers.subscribe', [], interface)
         if server == self.default_server:
             self.switch_to_interface(server)
         #self.notify('interfaces')
@@ -938,12 +938,8 @@ class Network(util.DaemonThread):
             interface.print_error(response)
             self.connection_down(interface.server)
             return
-        height = header.get('block_height')
-        #interface.print_error('got header', height, blockchain.hash_header(header))
-        if interface.request != height:
-            interface.print_error("unsolicited header",interface.request, height)
-            self.connection_down(interface.server)
-            return
+        height = interface.request
+        header = blockchain.deserialize_header(bytes.fromhex(header), height)
         chain = blockchain.check_header(header)
         if interface.mode == 'backward':
             can_connect = blockchain.can_connect(header)
@@ -1151,8 +1147,7 @@ class Network(util.DaemonThread):
 
     def on_notify_header(self, interface, header_dict):
         try:
-            height = header_dict['block_height']
-            header_hex = blockchain.serialize_header(header_dict)
+            header_hex, height = header_dict['hex'], header_dict['height']
         except KeyError:
             # no point in keeping this connection without headers sub
             self.connection_down(interface.server)
@@ -1270,7 +1265,7 @@ class Network(util.DaemonThread):
         invocation(callback)
 
     def request_header(self, interface, height):
-        self.queue_request('blockchain.block.get_header', [height], interface)
+        self.queue_request('blockchain.block.header', [height], interface)
         interface.request = height
         interface.req_time = time.time()
 
