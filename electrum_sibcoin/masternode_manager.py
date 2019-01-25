@@ -6,7 +6,7 @@ from decimal import Decimal
 from . import bitcoin
 from . import ecc
 from .blockchain import hash_header
-from .masternode import MasternodeAnnounce, NetworkAddress
+from .masternode import MasternodeAnnounce, NetworkAddress, PAYMENT_FOR_MASTERNODE
 from .masternode_budget import BudgetProposal, BudgetVote
 from .util import AlreadyHaveAddress, print_error, bfh
 from .util import format_satoshis_plain
@@ -157,7 +157,7 @@ class MasternodeManager(object):
         if not txid or prevout_n is None:
             return
         # Return if it already has the information.
-        if mn.collateral_key and mn.vin.get('address') and mn.vin.get('value') == 1000 * bitcoin.COIN:
+        if mn.collateral_key and mn.vin.get('address') and mn.vin.get('value') == PAYMENT_FOR_MASTERNODE * bitcoin.COIN:
             return
 
         tx = self.wallet.transactions.get(txid)
@@ -182,9 +182,9 @@ class MasternodeManager(object):
 
         used_vins = map(lambda mn: '%s:%d' % (mn.vin.get('prevout_hash'), mn.vin.get('prevout_n', 0xffffffff)), self.masternodes)
         unused = lambda d: '%s:%d' % (d['prevout_hash'], d['prevout_n']) not in used_vins
-        correct_amount = lambda d: d['value'] == 1000 * bitcoin.COIN
-
-        # Valid outputs have a value of exactly 1000 SIB and
+        correct_amount = lambda d: d['value'] == PAYMENT_FOR_MASTERNODE * bitcoin.COIN
+        
+        # Valid outputs have a value of exactly 4000 SIB and
         # are not in use by an existing masternode.
         is_valid = lambda d: correct_amount(d) and unused(d)
 
@@ -214,7 +214,7 @@ class MasternodeManager(object):
         if tx_height.conf < MASTERNODE_MIN_CONFIRMATIONS:
             raise Exception('Collateral payment must have at least %d confirmations (current: %d)' % (MASTERNODE_MIN_CONFIRMATIONS, conf))
         # Ensure that the masternode's vin is valid.
-        if mn.vin.get('value', 0) != bitcoin.COIN * 1000:
+        if mn.vin.get('value', 0) != bitcoin.COIN * PAYMENT_FOR_MASTERNODE:
             raise Exception('Masternode requires a collateral 4000 SIB output.')
 
         # If the masternode has been announced, it can be announced again if it has been disabled.

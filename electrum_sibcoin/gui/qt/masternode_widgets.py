@@ -7,7 +7,7 @@ from PyQt5.QtWidgets import *
 from electrum_sibcoin import bitcoin
 from electrum_sibcoin.bitcoin import COIN
 from electrum_sibcoin.i18n import _
-from electrum_sibcoin.masternode import NetworkAddress, MasternodeAnnounce
+from electrum_sibcoin.masternode import NetworkAddress, MasternodeAnnounce, PAYMENT_FOR_MASTERNODE
 
 from . import util
 
@@ -89,11 +89,11 @@ class PrevOutWidget(QWidget):
         super(PrevOutWidget, self).__init__(parent)
         self.vin = {}
         self.hash_edit = QLineEdit()
-        self.hash_edit.setPlaceholderText(_('The TxID of your 1000 SIB output'))
+        self.hash_edit.setPlaceholderText(_('The TxID of your %d SIB output' % PAYMENT_FOR_MASTERNODE))
         self.index_edit = QLineEdit()
-        self.index_edit.setPlaceholderText(_('The output number of your 1000 SIB output'))
+        self.index_edit.setPlaceholderText(_('The output number of your %d SIB output' % PAYMENT_FOR_MASTERNODE))
         self.address_edit = QLineEdit()
-        self.address_edit.setPlaceholderText(_('The address that 1000 SIB was sent to'))
+        self.address_edit.setPlaceholderText(_('The address that %d SIB was sent to' % PAYMENT_FOR_MASTERNODE))
 
         # Collection of fields so that it's easier to act on them all at once.
         self.fields = (self.hash_edit, self.index_edit, self.address_edit)
@@ -284,7 +284,7 @@ class MasternodeOutputsTab(QWidget):
         vbox = QVBoxLayout()
 
         desc = ' '.join(['Use this tab to scan for and choose a collateral payment for your masternode.',
-            'A valid collateral payment is exactly 1000 SIB.'])
+            'A valid collateral payment is exactly %d SIB.' % PAYMENT_FOR_MASTERNODE])
         desc = QLabel(_(desc))
         desc.setWordWrap(True)
         vbox.addWidget(desc)
@@ -308,7 +308,7 @@ class MasternodeOutputsTab(QWidget):
         self.setLayout(vbox)
 
     def scan_for_outputs(self, include_frozen):
-        """Scan for 1000 SIB outputs.
+        """Scan for 4000 SIB outputs.
 
         If one or more is found, populate the list and enable the sign button.
         """
@@ -319,7 +319,7 @@ class MasternodeOutputsTab(QWidget):
         if len(coins) > 0:
             self.valid_outputs_list.add_outputs(coins)
         else:
-            self.status_edit.setText(_('No 1000 SIB outputs were found.'))
+            self.status_edit.setText(_('No %d SIB outputs were found.' % PAYMENT_FOR_MASTERNODE))
             self.status_edit.setStyleSheet(util.ColorScheme.RED.as_stylesheet())
 
     def set_output(self, vin):
@@ -344,7 +344,7 @@ class MasternodeOutputsTab(QWidget):
         status_text = _('Masternode has no collateral payment assigned.')
         can_scan = not mn.announced
         # Disable the scan_outputs button if the masternode already has an assigned output.
-        if mn.vin.get('value', 0) == COIN * 1000:
+        if mn.vin.get('value', 0) == COIN * PAYMENT_FOR_MASTERNODE:
             can_scan = False
             self.valid_outputs_list.add_output(mn.vin)
             status_text = _('Masternode already has a collateral payment.')

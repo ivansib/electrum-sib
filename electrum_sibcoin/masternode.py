@@ -9,6 +9,8 @@ from .transaction import BCDataStream, parse_input, parse_outpoint
 from . import util
 from .util import bfh, bh2u, to_bytes, to_string
 
+PROTOCOL_VERSION = 70210
+PAYMENT_FOR_MASTERNODE = 4000
 
 class NetworkAddress(object):
     """A network address."""
@@ -58,7 +60,7 @@ class NetworkAddress(object):
 class MasternodePing(object):
     """A masternode ping message."""
     @classmethod
-    def deserialize(cls, vds, protocol_version=70208):
+    def deserialize(cls, vds, protocol_version=PROTOCOL_VERSION):
         if protocol_version <= 70208:
             vin = parse_input(vds, full_parse=True)
         else:
@@ -91,7 +93,7 @@ class MasternodePing(object):
         return cls(**kwargs)
 
     def __init__(self, vin=None, block_hash='', sig_time=0, sig='',
-                 protocol_version=70208):
+                 protocol_version=PROTOCOL_VERSION):
         if vin is None:
             vin = {'prevout_hash':'', 'prevout_n': 0, 'scriptSig': '', 'sequence':0xffffffff}
         else:
@@ -186,9 +188,9 @@ class MasternodeAnnounce(object):
 
     Attributes:
         - alias: Alias to help the user identify this masternode.
-        - vin: 1K SIB input (outpoint: 1K SIB input for proto > 70208).
+        - vin: 4K SIB input (outpoint: 4K SIB input for proto > 70208).
         - addr: Address that the masternode can be reached at.
-        - collateral_key: Key that can spend the 1K SIB input.
+        - collateral_key: Key that can spend the 4K SIB input.
         - delegate_key: Key that the masternode will sign messages with.
         - sig: Message signature.
         - sig_time: Message signature creation time.
@@ -199,7 +201,7 @@ class MasternodeAnnounce(object):
     """
     def __init__(self, alias='', vin=None, addr=NetworkAddress(),
                  collateral_key='', delegate_key='', sig='', sig_time=0,
-                 protocol_version=70208, last_ping=MasternodePing(),
+                 protocol_version=PROTOCOL_VERSION, last_ping=MasternodePing(),
                  announced=False):
         self.alias = alias
         if vin is None:
