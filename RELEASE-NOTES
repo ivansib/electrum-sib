@@ -81,7 +81,7 @@
  * Hardware wallets: a "show address" button is now displayed in the
    Receive tab of the Qt GUI. (#4316)
  * Trezor One: implemented advanced/matrix recovery (#4329)
- * Qt/Kivy: added "duff" as optional base unit.
+ * Qt/Kivy: added "ivans" as optional base unit.
  * Kivy GUI: significant performance improvements when displaying
    history and address list of large wallets; and transaction dialog
    of large transactions.

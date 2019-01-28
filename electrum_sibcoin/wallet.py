@@ -137,9 +137,9 @@ def sweep(privkeys, network, config, recipient, fee=None, imax=100):
         tx = Transaction.from_io(inputs, outputs)
         fee = config.estimate_fee(tx.estimated_size())
     if total - fee < 0:
-        raise Exception(_('Not enough funds on address.') + '\nTotal: %d duffs\nFee: %d'%(total, fee))
+        raise Exception(_('Not enough funds on address.') + '\nTotal: %d ivans\nFee: %d'%(total, fee))
     if total - fee < dust_threshold(network):
-        raise Exception(_('Not enough funds on address.') + '\nTotal: %d duffs\nFee: %d\nDust Threshold: %d'%(total, fee, dust_threshold(network)))
+        raise Exception(_('Not enough funds on address.') + '\nTotal: %d ivans\nFee: %d\nDust Threshold: %d'%(total, fee, dust_threshold(network)))
 
     outputs = [TxOutput(TYPE_ADDRESS, recipient, total - fee)]
     locktime = network.get_local_height()
@@ -507,7 +507,7 @@ class Abstract_Wallet(AddressSynchronizer):
             if fee is not None:
                 size = tx.estimated_size()
                 fee_per_kb = round(fee * 1000 / size)
-                extra.append(format_fee_satoshis(fee_per_kb) + ' duffs/kB')
+                extra.append(format_fee_satoshis(fee_per_kb) + ' ivans/kB')
             if fee is not None and height in (TX_HEIGHT_UNCONF_PARENT, TX_HEIGHT_UNCONFIRMED) \
                and self.network and self.network.config.has_fee_mempool():
                 exp_n = self.network.config.fee_to_depth(fee_per_kb)
