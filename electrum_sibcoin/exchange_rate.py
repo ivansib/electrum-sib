@@ -9,6 +9,7 @@ import time
 import csv
 import decimal
 from decimal import Decimal
+from time import sleep
 
 from .bitcoin import COIN
 from .i18n import _
@@ -42,7 +43,12 @@ class ExchangeBase(PrintError):
         # APIs must have https
         url = ''.join(['https://', site, get_string])
         response = requests.request('GET', url, headers={'User-Agent' : 'Sibcoin-Electrum'}, timeout=10)
-        return response.json()
+        try:
+            res = response.json()
+        except json.decoder.JSONDecodeError:
+            res = "try_again"
+
+        return res
 
     def get_csv(self, site, get_string):
         url = ''.join(['https://', site, get_string])
@@ -163,19 +169,18 @@ class Coingecko(ExchangeBase):
             stForRec = time.strftime("%d-%m-%Y", st)
             history = self.get_json('api.coingecko.com',
                                '/api/v3/coins/sibcoin/history?date=%s' % stForRec)
-
-            if "market_data" not in history:
+            if "try_again" in history:
+                sleep(1)
+            elif "market_data" not in history:
                 isWork = False
             else:
                 price = history["market_data"]["current_price"][ccy.lower()]
                 stForDict = time.strftime("%Y-%m-%d", st)
-                
                 if stForDict in d:
                     isWork = False
                 else:
                     d[stForDict] = price
                     t = t - 24 * 3600
-
         return d
 
 class Bittrex(ExchangeBase):
