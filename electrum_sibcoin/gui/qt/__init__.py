@@ -117,16 +117,19 @@ class ElectrumGui:
         self.build_tray_menu()
         self.tray.show()
         self.app.new_window_signal.connect(self.start_new_window)
-        self.set_dark_theme_if_needed()
+        self.set_theme()
         run_hook('init_qt', self)
 
-    def set_dark_theme_if_needed(self):
-        use_dark_theme = self.config.get('qt_gui_color_theme', 'default') == 'dark'
+    def set_theme(self):
+        theme = self.config.get('qt_gui_color_theme', 'default')
         self.app.setStyle('Fusion')
-        if use_dark_theme:
+
+        use_dark_theme = False
+        if theme == 'dark':
             from .dark_sibcoin_style import sibcoin_stylesheet
             self.app.setStyleSheet(sibcoin_stylesheet)
-        else:
+            use_dark_theme = True
+        elif theme == 'light':
             from .sibcoin_style import sibcoin_stylesheet
             self.app.setStyleSheet(sibcoin_stylesheet)
         # Even if we ourselves don't set the dark theme,

@@ -2847,7 +2847,8 @@ class ElectrumWindow(QMainWindow, MessageBoxMixin, PrintError):
         gui_widgets.append((qr_label, qr_combo))
 
         colortheme_combo = QComboBox()
-        colortheme_combo.addItem(_('Light'), 'default')
+        colortheme_combo.addItem(_('Default'), 'default')
+        colortheme_combo.addItem(_('Light'), 'light')
         colortheme_combo.addItem(_('Dark'), 'dark')
         index = colortheme_combo.findData(self.config.get('qt_gui_color_theme', 'default'))
         colortheme_combo.setCurrentIndex(index)
