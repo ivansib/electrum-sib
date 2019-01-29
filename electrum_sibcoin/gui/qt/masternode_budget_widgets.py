@@ -304,9 +304,12 @@ class ProposalsTab(QWidget):
         self.submit_ready_proposals_button.setEnabled(can_submit)
 
         num = len(self.unsubmitted_proposals)
-        noun = 'proposal%s' % ('' if num == 1 else 's')
-        article = 'is' if num == 1 else 'are'
-        self.ready_proposals.setText(str(num) + _(' %s %s ready to be submitted.' % (noun, article)))
+        if num == 1:
+            msg = _('proposal is ready to be submitted')
+        else:
+            msg = _('proposals are ready to be submitted')
+
+        self.ready_proposals.setText(str(num) + msg)
         self.ready_proposals.setVisible(can_submit)
 
     def create_proposal_from_widgets(self):
