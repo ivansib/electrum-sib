@@ -55,7 +55,8 @@ QGroupBox::title {
 }
 
 #main_window_nav_bar QTabBar {
-    background: url(:/icons/navlogo.png) no-repeat left top;
+    background-image: url(:/icons/navlogo.png);
+    background-repeat: no-repeat;
 }
 
 QTabWidget#main_window_nav_bar::tab-bar {
@@ -76,7 +77,7 @@ QTabWidget#main_window_nav_bar::pane {
 
 #main_window_nav_bar QTabBar::tab:first {
     border-left: 0 solid #fff;
-    margin-left:180px;
+    margin-left: 60px;
 }
 
 #main_window_nav_bar QTabBar::tab:last {
