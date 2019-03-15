@@ -2,26 +2,21 @@
 ;Include Modern UI
   !include "TextFunc.nsh" ;Needed for the $GetSize function. I know, doesn't sound logical, it isn't.
   !include "MUI2.nsh"
-  !include "x64.nsh"
   
 ;--------------------------------
 ;Variables
 
-  !define PRODUCT_NAME "Sibcoin-Electrum"
-  !define PREV_PROD_NAME "Electrum-SIBCOIN"
-  !define PRODUCT_WEB_SITE "https://github.com/ivansib/electrum-sib"
-  !define PRODUCT_PUBLISHER "Electrum Technologies GmbH"
+  !define PRODUCT_NAME "Electrum-Sibcoin"
+  !define PRODUCT_WEB_SITE "https://github.com/ivansib/electrum-sib.git"
+  !define PRODUCT_PUBLISHER "Electrum Sibcoin Technologies GmbH"
   !define PRODUCT_UNINST_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}"
-  !define PREV_PROD_UNINST_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PREV_PROD_NAME}"
-  !define BUILD_ARCH "${WINEARCH}"
 
-  Var PREVINSTDIR
 ;--------------------------------
 ;General
 
   ;Name and file
   Name "${PRODUCT_NAME}"
-  OutFile "dist/${PRODUCT_NAME}-${PRODUCT_VERSION}-setup-${BUILD_ARCH}.exe"
+  OutFile "dist/electrum-setup.exe"
 
   ;Default installation folder
   InstallDir "$PROGRAMFILES\${PRODUCT_NAME}"
@@ -63,13 +58,13 @@
   VIAddVersionKey ProductName "${PRODUCT_NAME} Installer"
   VIAddVersionKey Comments "The installer for ${PRODUCT_NAME}"
   VIAddVersionKey CompanyName "${PRODUCT_NAME}"
-  VIAddVersionKey LegalCopyright "2013-2016 ${PRODUCT_PUBLISHER}"
+  VIAddVersionKey LegalCopyright "2013-2018 ${PRODUCT_PUBLISHER}"
   VIAddVersionKey FileDescription "${PRODUCT_NAME} Installer"
   VIAddVersionKey FileVersion ${PRODUCT_VERSION}
   VIAddVersionKey ProductVersion ${PRODUCT_VERSION}
   VIAddVersionKey InternalName "${PRODUCT_NAME} Installer"
   VIAddVersionKey LegalTrademarks "${PRODUCT_NAME} is a trademark of ${PRODUCT_PUBLISHER}" 
-  VIAddVersionKey OriginalFilename "${PRODUCT_NAME}-${PRODUCT_VERSION}-setup-${BUILD_ARCH}.exe"
+  VIAddVersionKey OriginalFilename "${PRODUCT_NAME}.exe"
 
 ;--------------------------------
 ;Interface Settings
@@ -77,13 +72,12 @@
   !define MUI_ABORTWARNING
   !define MUI_ABORTWARNING_TEXT "Are you sure you wish to abort the installation of ${PRODUCT_NAME}?"
   
-  !define MUI_ICON "icons\electrum-sibcoin.ico"
+  !define MUI_ICON "c:\electrum-sib\icons\electrum-sibcoin.ico"
   
 ;--------------------------------
 ;Pages
 
   !insertmacro MUI_PAGE_DIRECTORY
-  !insertmacro MUI_PAGE_COMPONENTS
   !insertmacro MUI_PAGE_INSTFILES
   !insertmacro MUI_UNPAGE_CONFIRM
   !insertmacro MUI_UNPAGE_INSTFILES
@@ -105,44 +99,19 @@ Function .onInit
 		SetErrorLevel 740 ;ERROR_ELEVATION_REQUIRED
 		Quit
 	${EndIf}
-
-    ${If} ${RunningX64}
-        SetRegView 64
-        StrCpy $INSTDIR "$PROGRAMFILES64\${PRODUCT_NAME}"
-    ${Else}
-        ${If} ${BUILD_ARCH} == "win64"
-            MessageBox MB_OK|MB_ICONSTOP "Can not Install 64-bit App On 32-bit OS!"
-            Abort
-        ${EndIf}
-    ${EndIf}
 FunctionEnd
 
-Section "Sibcoin-Electrum" SectionDE
+Section
   SetOutPath $INSTDIR
-
-  ;Uninstall prev product name versions
-  ReadRegStr $PREVINSTDIR HKCU "Software\${PREV_PROD_NAME}" ""
-  ${If} ${PREVINSTDIR} != ""
-    RMDir /r "$PREVINSTDIR\*.*"
-    RMDir "$PREVINSTDIR"
-
-    Delete "$DESKTOP\${PREV_PROD_NAME}.lnk"
-    Delete "$SMPROGRAMS\${PREV_PROD_NAME}\*.*"
-    RMDir  "$SMPROGRAMS\${PREV_PROD_NAME}"
-
-    DeleteRegKey HKCU "Software\Classes\sibcoin"
-    DeleteRegKey HKCU "Software\${PREV_PROD_NAME}"
-    DeleteRegKey HKCU "${PREV_PROD_UNINST_KEY}"
-  ${EndIf}
 
   ;Uninstall previous version files
   RMDir /r "$INSTDIR\*.*"
   Delete "$DESKTOP\${PRODUCT_NAME}.lnk"
   Delete "$SMPROGRAMS\${PRODUCT_NAME}\*.*"
-
+  
   ;Files to pack into the installer
-  File /r "dist\electrum-sibcoin\*.*"
-  File "icons\electrum-sibcoin.ico"
+  File /r "dist\electrum\*.*"
+  File "c:\electrum-sib\icons\electrum-sibcoin.ico"
 
   ;Store installation folder
   WriteRegStr HKCU "Software\${PRODUCT_NAME}" "" $INSTDIR
@@ -153,21 +122,21 @@ Section "Sibcoin-Electrum" SectionDE
 
   ;Create desktop shortcut
   DetailPrint "Creating desktop shortcut..."
-  CreateShortCut "$DESKTOP\${PRODUCT_NAME}.lnk" "$INSTDIR\electrum-sibcoin-${PRODUCT_VERSION}.exe" ""
+  CreateShortCut "$DESKTOP\${PRODUCT_NAME}.lnk" "$INSTDIR\electrum-${PRODUCT_VERSION}.exe" ""
 
   ;Create start-menu items
   DetailPrint "Creating start-menu items..."
   CreateDirectory "$SMPROGRAMS\${PRODUCT_NAME}"
   CreateShortCut "$SMPROGRAMS\${PRODUCT_NAME}\Uninstall.lnk" "$INSTDIR\Uninstall.exe" "" "$INSTDIR\Uninstall.exe" 0
-  CreateShortCut "$SMPROGRAMS\${PRODUCT_NAME}\${PRODUCT_NAME}.lnk" "$INSTDIR\electrum-sibcoin-${PRODUCT_VERSION}.exe" "" "$INSTDIR\electrum-sibcoin-${PRODUCT_VERSION}.exe" 0
-  CreateShortCut "$SMPROGRAMS\${PRODUCT_NAME}\${PRODUCT_NAME} Testnet.lnk" "$INSTDIR\electrum-sibcoin-${PRODUCT_VERSION}.exe" "--testnet" "$INSTDIR\electrum-sibcoin-${PRODUCT_VERSION}.exe" 0
+  CreateShortCut "$SMPROGRAMS\${PRODUCT_NAME}\${PRODUCT_NAME}.lnk" "$INSTDIR\electrum-${PRODUCT_VERSION}.exe" "" "$INSTDIR\electrum-${PRODUCT_VERSION}.exe" 0
+  CreateShortCut "$SMPROGRAMS\${PRODUCT_NAME}\${PRODUCT_NAME} Testnet.lnk" "$INSTDIR\electrum-${PRODUCT_VERSION}.exe" "--testnet" "$INSTDIR\electrum-${PRODUCT_VERSION}.exe" 0
 
 
-  ;Links sibcoin: URI's to Electrum
-  WriteRegStr HKCU "Software\Classes\sibcoin" "" "URL:sibcoin Protocol"
-  WriteRegStr HKCU "Software\Classes\sibcoin" "URL Protocol" ""
-  WriteRegStr HKCU "Software\Classes\sibcoin" "DefaultIcon" "$\"$INSTDIR\electrum-sibcoin.ico, 0$\""
-  WriteRegStr HKCU "Software\Classes\sibcoin\shell\open\command" "" "$\"$INSTDIR\electrum-sibcoin-${PRODUCT_VERSION}.exe$\" $\"%1$\""
+  ;Links bitcoin: URI's to Electrum
+  WriteRegStr HKCU "Software\Classes\bitcoin" "" "URL:bitcoin Protocol"
+  WriteRegStr HKCU "Software\Classes\bitcoin" "URL Protocol" ""
+  WriteRegStr HKCU "Software\Classes\bitcoin" "DefaultIcon" "$\"$INSTDIR\electrum-sibcoin.ico, 0$\""
+  WriteRegStr HKCU "Software\Classes\bitcoin\shell\open\command" "" "$\"$INSTDIR\electrum-${PRODUCT_VERSION}.exe$\" $\"%1$\""
 
   ;Adds an uninstaller possibility to Windows Uninstall or change a program section
   WriteRegStr HKCU "${PRODUCT_UNINST_KEY}" "DisplayName" "$(^Name)"
@@ -183,22 +152,8 @@ Section "Sibcoin-Electrum" SectionDE
   WriteRegDWORD HKCU "${PRODUCT_UNINST_KEY}" "EstimatedSize" "$0"
 SectionEnd
 
-Section "Tor Proxy" SectionTor
-  GetTempFileName $0
-  File /oname=$0 "dist\tor-proxy-setup.exe"
-  ExecWait "$0"
-  Delete "$0"
-SectionEnd
-
 ;--------------------------------
 ;Descriptions
-LangString DESC_DE ${LANG_ENGLISH} "Sibcoin-Electrum Wallet"
-LangString DESC_TOR ${LANG_ENGLISH} "The Tor Project Socks Proxy"
-
-!insertmacro MUI_FUNCTION_DESCRIPTION_BEGIN
-!insertmacro MUI_DESCRIPTION_TEXT ${SectionDE} $(DESC_DE)
-!insertmacro MUI_DESCRIPTION_TEXT ${SectionTor} $(DESC_TOR)
-!insertmacro MUI_FUNCTION_DESCRIPTION_END
 
 ;--------------------------------
 ;Uninstaller Section
@@ -212,7 +167,7 @@ Section "Uninstall"
   Delete "$SMPROGRAMS\${PRODUCT_NAME}\*.*"
   RMDir  "$SMPROGRAMS\${PRODUCT_NAME}"
   
-  DeleteRegKey HKCU "Software\Classes\sibcoin"
+  DeleteRegKey HKCU "Software\Classes\bitcoin"
   DeleteRegKey HKCU "Software\${PRODUCT_NAME}"
   DeleteRegKey HKCU "${PRODUCT_UNINST_KEY}"
 SectionEnd
