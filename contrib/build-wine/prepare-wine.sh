@@ -13,6 +13,12 @@ LIBUSB_FILENAME=libusb-1.0.22.7z
 LIBUSB_URL=https://prdownloads.sourceforge.net/project/libusb/libusb-1.0/libusb-1.0.22/$LIBUSB_FILENAME?download
 LIBUSB_SHA256=671f1a420757b4480e7fadc8313d6fb3cbb75ca00934c417c1efa6e77fb8779b
 
+LIBX11_GOST_FILENAME=libx11_gost_hash-0.dll
+LIBX11_GOST_URL=https://drive.google.com/open?id=10ozJY2To5Q9eeh7ByFCS42vLjYEvEAHT
+
+LIBX11_FILENAME=libx11hash-0.dll
+LIBX11_URL=https://drive.google.com/open?id=1qV-Lf8hH1w5_Df-C6mLV5euxb4e6Ssvo
+
 PYTHON_VERSION=3.6.8
 
 ## These settings probably don't need change
@@ -76,7 +82,15 @@ download_if_not_exist $LIBUSB_FILENAME "$LIBUSB_URL"
 verify_hash $LIBUSB_FILENAME "$LIBUSB_SHA256"
 7z x -olibusb $LIBUSB_FILENAME -aoa
 
+download_if_not_exist $LIBX11_GOST_FILENAME "$LIBX11_GOST_URL"
+download_if_not_exist $LIBX11_FILENAME "$LIBX11_URL"
+
 cp libusb/MS32/dll/libusb-1.0.dll $WINEPREFIX/drive_c/$PYTHON_FOLDER/
+
+mkdir $WINEPREFIX/drive_c/$PYTHON_FOLDER/x11_gost_hash/
+
+cp $LIBX11_GOST_FILENAME $WINEPREFIX/drive_c/$PYTHON_FOLDER/x11_gost_hash/
+cp $LIBX11_FILENAME $WINEPREFIX/drive_c/$PYTHON_FOLDER/
 
 mkdir -p $WINEPREFIX/drive_c/tmp
 cp secp256k1/libsecp256k1.dll $WINEPREFIX/drive_c/tmp/

@@ -106,6 +106,8 @@ protobuf==3.6.1 \
     --hash=sha256:fcfc907746ec22716f05ea96b7f41597dfe1a1c088f861efb8a0d4f4196a6f10
 pyaes==1.6.1 \
     --hash=sha256:02c1b1405c38d3c370b085fb952dd8bea3fadcee6411ad99f312cc129c536d8f
+PySocks==1.6.8 \
+    --hash=sha256:3fe52c55890a248676fd69dc9e3c4e811718b777834bcaab7a8125cf9deac672
 QDarkStyle==2.5.4 \
     --hash=sha256:3eb60922b8c4d9cedecb6897ca4c9f8a259d81bdefe5791976ccdf12432de1f0 \
     --hash=sha256:51331fc6490b38c376e6ba8d8c814320c8d2d1c2663055bc396321a7c28fa8be
