@@ -35,9 +35,6 @@ binaries = [(PYHOME+"/libusb-1.0.dll", ".")]
 # Add libx11hash binary
 binaries += [(PYHOME+"/libx11hash-0.dll", ".")]
 
-# Add libx11_gost_hash binary
-binaries += [(PYHOME+"/x11_gost_hash/libx11_gost_hash-0.dll", "x11_gost_hash")]
-
 # Workaround for "Retro Look":
 binaries += [b for b in collect_dynamic_libs('PyQt5') if 'qwindowsvista' in b[0]]
 

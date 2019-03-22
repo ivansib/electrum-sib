@@ -29,7 +29,6 @@ import hashlib
 import hmac
 
 import pyaes
-import x11_gost_hash
 
 from .util import assert_bytes, InvalidPassword, to_bytes, to_string
 from .util import print_stderr
@@ -138,7 +137,7 @@ def Hash(x: bytes) -> bytes:
 
 
 def PoWHash(x):
-    return x11_gost_hash.getPoWHash(to_bytes(x))
+    return getPoWHash(to_bytes(x))
 
 
 def hash_160(x: bytes) -> bytes:
