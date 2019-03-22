@@ -39,6 +39,12 @@ folder.
         cd electrum-sib
     ```
 
+    Compile the icons file for Qt::
+    ```	
+    pyrcc5 icons.qrc -o electrum_sibcoin/gui/qt/icons_rc.py
+    
+    ```
+
     And then build from this directory:
     ```
     $ git checkout $REV
