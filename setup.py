@@ -80,7 +80,9 @@ setup(
             'locale/*/LC_MESSAGES/electrum.mo',
         ],
         'electrum_sibcoin.gui': [
-            'icons/*',
+            'icons/*.*',
+            'icons/radio/*.*',
+            'icons/checkbox/*.*',
         ],
     },
     scripts=['electrum_sibcoin/electrum-sibcoin'],
