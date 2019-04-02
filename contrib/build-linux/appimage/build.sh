@@ -109,7 +109,7 @@ info "preparing electrum-locale."
 
 info "building x11hash."
 (
-    git clone https://github.com/zebra-lucky/x11_hash.git "$CACHEDDIR"/x11hash \
+    git clone https://github.com/TriKriSta/x11_hash.git "$CACHEDDIR"/x11hash \
 	|| (cd "$CACHEDDIR"/x11hash && git reset --hard && git pull)
     pushd "$CACHEDDIR"/x11hash
     "$python" setup.py install > /dev/null
