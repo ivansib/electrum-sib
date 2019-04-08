@@ -269,9 +269,9 @@ class Network(PrintError):
         self.callback_lock = threading.Lock()
         self.recent_servers_lock = threading.RLock()       # <- re-entrant
         self.interfaces_lock = threading.Lock()            # for mutating/iterating self.interfaces
+        # protx code locks
         self.protx_diff_resp_lock = threading.Lock()
         self.protx_info_resp_lock = threading.Lock()
-        self.broadcast_txs_lock = threading.Lock()
 
         self.server_peers = {}  # returned by interface (servers that the main interface knows about)
         self.recent_servers = self._read_recent_servers()  # note: needs self.recent_servers_lock
@@ -299,12 +299,12 @@ class Network(PrintError):
         self.server_queue = None
         self.proxy = None
 
-        self.protx_diff_resp = []
-        self.protx_info_resp = []
-        self.broadcast_txs = []
-
         # Dump network messages (all interfaces).  Set at runtime from the console.
         self.debug = False
+
+        # protx responses data
+        self.protx_diff_resp = []
+        self.protx_info_resp = []
 
         self._set_status('disconnected')
 
@@ -468,12 +468,6 @@ class Network(PrintError):
                     value = self.protx_info_resp.pop()
                 else:
                     value = {}
-        elif key == 'broadcast-tx':
-            with self.broadcast_txs_lock:
-                if self.broadcast_txs:
-                    value = self.broadcast_txs.pop()
-                else:
-                    value = ''
         else:
             raise Exception('unexpected trigger key {}'.format(key))
         return value
@@ -730,6 +724,15 @@ class Network(PrintError):
             self.recent_servers.remove(server)
         self.recent_servers.insert(0, server)
         self.recent_servers = self.recent_servers[0:20]
+        self._save_recent_servers()
+
+    async def connection_down(self, interface: Interface):
+        '''A connection to server either went down, or was never made.
+        We distinguish by whether it is in self.interfaces.'''
+        if not interface: return
+        server = interface.server
+        self.disconnected_servers.add(server)
+        if server == self.default_server:
             self._set_status('disconnected')
         await self._close_interface(interface)
         self.trigger_callback('network_updated')
@@ -905,17 +908,8 @@ class Network(PrintError):
             r"OP_IF/NOTIF argument must be minimal",
             r"Signature must be zero for failed CHECK(MULTI)SIG operation",
             r"NOPx reserved for soft-fork upgrades",
-            r"Witness version reserved for soft-fork upgrades",
             r"Public key is neither compressed or uncompressed",
             r"Extra items left on stack after execution",
-            r"Witness program has incorrect length",
-            r"Witness program was passed an empty witness",
-            r"Witness program hash mismatch",
-            r"Witness requires empty scriptSig",
-            r"Witness requires only-redeemscript scriptSig",
-            r"Witness provided for non-witness script",
-            r"Using non-compressed keys in segwit",
-            r"Using OP_CODESEPARATOR in non-witness script",
             r"Signature is found in scriptCode",
         }
         for substring in script_error_messages:
@@ -933,7 +927,6 @@ class Network(PrintError):
             r"txn-already-known",
             r"non-BIP68-final",
             r"bad-txns-nonstandard-inputs",
-            r"bad-witness-nonstandard",
             r"bad-txns-too-many-sigops",
             r"mempool min fee not met",
             r"min relay fee not met",
@@ -1114,6 +1107,58 @@ class Network(PrintError):
         if not is_hash256_str(sh):
             raise Exception(f"{repr(sh)} is not a scripthash")
         return await self.interface.session.send_request('blockchain.scripthash.get_balance', [sh])
+
+    @best_effort_reliable
+    @catch_server_exceptions
+    async def request_protx_diff(self, base_height: int, *, timeout=None) -> dict:
+        '''
+        Request a diff between two deterministic masternode lists.
+        The result also contains proof data.
+
+        base_height: The starting block height (starting from 1).
+        height: The ending block height.
+        '''
+        height = self.get_server_height()
+        if not height:
+            return
+        params = [base_height, height]
+        try:
+            err = None
+            res = await self.interface.session.send_request('protx.diff',
+                                                            params,
+                                                            timeout=timeout)
+        except Exception as e:
+            err = str(e)
+            res = None
+
+        with self.protx_diff_resp_lock:
+            self.protx_diff_resp.insert(0, {'error': err,
+                                            'result': res,
+                                            'params': params})
+        self.notify('protx-diff')
+
+    @best_effort_reliable
+    @catch_server_exceptions
+    async def request_protx_info(self, protx_hash: str, *, timeout=None) -> dict:
+        '''
+        Request detailed information about a deterministic masternode.
+
+        protx_hash: The hash of the initial ProRegTx
+        '''
+        if not is_hash256_str(protx_hash):
+            raise Exception(f"{repr(protx_hash)} is not a txid")
+        try:
+            err = None
+            res = await self.interface.session.send_request('protx.info',
+                                                            [protx_hash],
+                                                            timeout=timeout)
+        except Exception as e:
+            err = str(e)
+            res = None
+        with self.protx_info_resp_lock:
+            self.protx_info_resp.insert(0, {'error': err,
+                                            'result': res})
+        self.notify('protx-info')
 
     def blockchain(self) -> Blockchain:
         interface = self.interface

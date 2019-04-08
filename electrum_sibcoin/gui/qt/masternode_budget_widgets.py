@@ -1,12 +1,13 @@
 import webbrowser
 
 from PyQt5.QtGui import QFont, QBrush, QColor
-from PyQt5.QtCore import (Qt, QModelIndex, QVariant, QAbstractTableModel,
+from PyQt5.QtCore import (Qt, QVariant, QAbstractTableModel, QModelIndex,
                           QSortFilterProxyModel)
-from PyQt5.QtWidgets import (QWidget, QTableView, QAbstractItemView, QHeaderView,
-                             QVBoxLayout, QLabel, QLineEdit, QDataWidgetMapper, 
-                             QHBoxLayout, QComboBox, QPushButton, QFormLayout,
-                             QSpinBox, QMessageBox, QTreeWidgetItem, QMenu)
+from PyQt5.QtWidgets import (QLineEdit, QComboBox, QAbstractItemView,
+                             QVBoxLayout, QLabel, QPushButton, QMenu,
+                             QWidget, QTableView, QHeaderView,
+                             QDataWidgetMapper, QHBoxLayout, QFormLayout,
+                             QSpinBox, QMessageBox, QTreeWidgetItem)
 
 from electrum_sibcoin.i18n import _
 from electrum_sibcoin.masternode_budget import BudgetProposal, BudgetVote

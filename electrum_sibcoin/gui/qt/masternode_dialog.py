@@ -3,17 +3,26 @@ from datetime import datetime
 import os
 import traceback
 
-from PyQt5.QtWidgets import QTabWidget, QFileDialog
+from PyQt5.QtGui import QBrush, QColor
+from PyQt5.QtCore import (Qt, QVariant, pyqtSignal, pyqtSlot, QSize,
+                          QAbstractTableModel, QModelIndex,
+                          QSortFilterProxyModel)
+from PyQt5.QtWidgets import (QWidget, QTableView, QHeaderView,
+                             QAbstractItemView, QVBoxLayout, QDialog,
+                             QTabWidget, QLabel, QDataWidgetMapper,
+                             QPushButton, QLineEdit, QHBoxLayout,
+                             QFileDialog, QMessageBox)
 
 from electrum_sibcoin import bitcoin
 from electrum_sibcoin.i18n import _
 from electrum_sibcoin.masternode import MasternodeAnnounce
 from electrum_sibcoin.masternode_manager import parse_masternode_conf
+from electrum_sibcoin.protx import ProTxManager
 from electrum_sibcoin.util import PrintError, bfh
 
-from .masternode_widgets import *
-from .masternode_budget_widgets import *
-from electrum_dash.protx import ProTxManager
+from .masternode_widgets import (SignAnnounceWidget, masternode_status,
+                                 MasternodeEditor, MasternodeOutputsTab)
+from .masternode_budget_widgets import ProposalsWidget
 from . import util
 
 # Background color for enabled masternodes.
