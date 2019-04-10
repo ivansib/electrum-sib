@@ -1,5 +1,9 @@
 """Sibcoin look and feel."""
 
+import os
+from electrum_dash.util import pkg_dir
+
+
 sibcoin_stylesheet = """
 
 /**********************/
@@ -781,3 +785,7 @@ QWizard #info-label {
     color: #008000;
 }
 """
+
+
+pkg_dir_for_css = pkg_dir.replace(os.sep, '/')
+sibcoin_stylesheet = sibcoin_stylesheet.replace('{pkg_dir}', '%s' % pkg_dir_for_css)
