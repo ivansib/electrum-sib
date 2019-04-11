@@ -8,12 +8,21 @@ from copy import deepcopy
 
 from . import bitcoin
 from .bitcoin import TYPE_ADDRESS, is_b58_address, b58_address_to_hash160
-from .crypto import Hash
+from .crypto import sha256d
 from .dash_tx import (TxOutPoint, ProTxService, DashProRegTx, DashProUpServTx,
-                      DashProUpRegTx, DashProUpRevTx, DashCbTx)
+                      DashProUpRegTx, DashProUpRevTx, DashCbTx, SPEC_PRO_REG_TX,
+                      SPEC_PRO_UP_SERV_TX, SPEC_PRO_UP_REG_TX, SPEC_PRO_UP_REV_TX)
 from .transaction import Transaction, BCDataStream, SerializationError
 from .util import PrintError, bfh, bh2u, hfu
 from .verifier import SPV
+
+
+PROTX_TX_TYPES = [
+    SPEC_PRO_REG_TX,
+    SPEC_PRO_UP_SERV_TX,
+    SPEC_PRO_UP_REG_TX,
+    SPEC_PRO_UP_REV_TX
+]
 
 
 class ProTxMNExc(Exception): pass
@@ -138,7 +147,8 @@ class ProTxManager(PrintError):
         self.callback_lock = threading.Lock()
         self.manager_lock = threading.Lock()
         self.callbacks = defaultdict(list)
-        self.subscribed = False
+        self.network_subscribed = False
+        self.protx_subscribed = False
 
         self.protx_base_height = 1
         self.protx_state = ProTxManager.DIP3_UNKNOWN
@@ -160,34 +170,46 @@ class ProTxManager(PrintError):
         self.unsubscribe_from_network_updates()
 
     def subscribe_to_network_updates(self):
-        if self.network and not self.subscribed:
-            self.subscribed = True
+        if self.network and not self.protx_subscribed:
+            if not self.network.is_connected():
+                return
+            self.protx_subscribed = True
             self.network.register_callback(self.on_protx_diff,
                                            ['protx-diff'])
             self.network.register_callback(self.on_protx_info,
                                            ['protx-info'])
-            self.network.register_callback(self.on_broadcast_tx,
-                                           ['broadcast-tx'])
-            self.network.register_callback(self.on_network_updated,
-                                           ['updated'])
-            self.network.request_protx_diff(self.protx_base_height)
+            self.network.register_callback(self.on_blockchain_updated,
+                                           ['blockchain_updated'])
+            self.network.run_from_another_thread(
+                self.network.request_protx_diff(self.protx_base_height)
+            )
 
     def unsubscribe_from_network_updates(self):
-        if self.network and self.subscribed:
-            self.subscribed = False
-            self.network.unregister_callback(self.on_protx_diff)
-            self.network.unregister_callback(self.on_protx_info)
-            self.network.unregister_callback(self.on_broadcast_tx)
-            self.network.unregister_callback(self.on_network_updated)
+        if self.network:
+            if self.protx_subscribed:
+                self.protx_subscribed = False
+                self.network.unregister_callback(self.on_protx_diff)
+                self.network.unregister_callback(self.on_protx_info)
+                self.network.unregister_callback(self.on_blockchain_updated)
+            if self.network_subscribed:
+                self.network_subscribed = False
+                self.network.unregister_callback(self.on_verified_tx)
+                self.network.unregister_callback(self.on_network_status)
 
-    def on_network_state_changed(self, network):
+    def on_network_start(self, network):
         self.network = network
+        if not self.network_subscribed:
+            self.network_subscribed = True
+            self.network.register_callback(self.on_verified_tx, ['verified'])
+            self.network.register_callback(self.on_network_status, ['status'])
+
+    def on_network_status(self, event):
         self.notify('manager-net-state-changed')
 
-    def on_network_updated(self, key):
+    async def on_blockchain_updated(self, key):
         if not self.network:
             return
-        self.network.request_protx_diff(self.protx_base_height)
+        await self.network.request_protx_diff(self.protx_base_height)
 
     def register_callback(self, callback, events):
         with self.callback_lock:
@@ -221,7 +243,7 @@ class ProTxManager(PrintError):
             value = self.alias_updated
             self.alias_updated = ''
         elif key == 'manager-net-state-changed':
-            value = True if self.network else False
+            value = True if self.network.is_connected() else False
         else:
             value = None
         self.trigger_callback(key, value)
@@ -436,7 +458,7 @@ class ProTxManager(PrintError):
                             b'\x00'*32, b'\x00'*96)
         return tx
 
-    def on_protx_diff(self, key, value):
+    async def on_protx_diff(self, key, value):
         '''Process and check protx.diff data, update protx_mns data/status'''
         base_height, height = value.get('params')
         if base_height != self.protx_base_height:
@@ -512,7 +534,7 @@ class ProTxManager(PrintError):
             sml_entry += bitcoin.b58_address_to_hash160(voting_address)[1]
             sml_entry += b'\x01' if protx_entry.get('isValid') else b'\x00'
 
-            sml_hashes.append(Hash(sml_entry))
+            sml_hashes.append(sha256d(sml_entry))
 
         # Calculate Merkle root for SML hashes
         hashes_len = len(sml_hashes)
@@ -524,7 +546,7 @@ class ProTxManager(PrintError):
                 hashes_len += 1
             res = []
             for i in range(hashes_len//2):
-                res.append(Hash(sml_hashes[i*2] + sml_hashes[i*2+1]))
+                res.append(sha256d(sml_hashes[i*2] + sml_hashes[i*2+1]))
             sml_hashes = res
             hashes_len = len(sml_hashes)
 
@@ -582,11 +604,11 @@ class ProTxManager(PrintError):
             self.protx_info.pop(h, None)
 
         for h in self.protx_info.keys():
-            self.network.request_protx_info(h)
+            await self.network.request_protx_info(h)
 
         self.notify('manager-diff-updated')
 
-    def on_protx_info(self, key, value):
+    async def on_protx_info(self, key, value):
         self.info_hash = ''
 
         error = value.get('error')
@@ -605,12 +627,8 @@ class ProTxManager(PrintError):
         self.info_hash = protx_hash
         self.notify('manager-info-updated')
 
-    def on_broadcast_tx(self, key, rawtx):
-        if not rawtx:
-            return
-        transaction = Transaction(rawtx)
-        transaction.deserialize()
-
-        if transaction.extra_payload:
-            extra_payload = transaction.extra_payload
-            extra_payload.after_broadcast(transaction, self)
+    def on_verified_tx(self, event, wallet, tx_hash, tx_mined_status):
+        tx = wallet.transactions.get(tx_hash)
+        conf = tx_mined_status.conf
+        if tx.tx_type in PROTX_TX_TYPES and tx.extra_payload and conf >= 1:
+            tx.extra_payload.after_confirmation(tx, self)
