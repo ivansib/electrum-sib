@@ -578,9 +578,9 @@ class ElectrumWindow(QMainWindow, MessageBoxMixin, PrintError):
 
         help_menu = menubar.addMenu(_("&Help"))
         help_menu.addAction(_("&About"), self.show_about)
-        help_menu.addAction(_("&Official website"), lambda: webbrowser.open("https://electrum.dash.org"))
+        help_menu.addAction(_("&Official website"), lambda: webbrowser.open("https://electrum.sibcoin.org"))
         help_menu.addSeparator()
-        help_menu.addAction(_("&Documentation"), lambda: webbrowser.open("https://docs.dash.org/en/latest/wallets/index.html#dash-electrum-wallet")).setShortcut(QKeySequence.HelpContents)
+        help_menu.addAction(_("&Documentation"), lambda: webbrowser.open("https://docs.sibcoin.org/en/latest/wallets/index.html#dash-electrum-wallet")).setShortcut(QKeySequence.HelpContents)
         self._auto_crash_reports = QAction(_("&Automated Crash Reports"), self, checkable=True)
         self._auto_crash_reports.setChecked(self.config.get(BaseCrashReporter.config_key, default=False))
         self._auto_crash_reports.triggered.connect(self.auto_crash_reports)

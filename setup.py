@@ -95,7 +95,7 @@ setup(
     maintainer="akhavr",
     maintainer_email="akhavr@khavr.com",
     license="MIT License",
-    url="https://sibcoin.money",
+    url="https://sibcoin.org",
     long_description="""Lightweight Sibcoin Wallet""",
     cmdclass={
         'install': CustomInstallCommand,
