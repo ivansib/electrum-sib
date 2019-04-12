@@ -25,10 +25,6 @@
 
 from electrum_sibcoin.i18n import _
 
-from PyQt5.QtCore import *
-from PyQt5.QtGui import *
-from PyQt5.QtWidgets import *
-
 from .util import *
 from .history_list import HistoryList
 from .qrtextedit import ShowQRTextEdit

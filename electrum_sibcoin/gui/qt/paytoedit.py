@@ -23,7 +23,6 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from PyQt5.QtGui import *
 from PyQt5.QtWidgets import QLineEdit
 import re
 from decimal import Decimal
@@ -111,6 +110,7 @@ class PayToEdit(CompletionTextEdit, ScanQRTextEdit):
         return int(p * Decimal(x.strip()))
 
     def parse_address(self, line):
+
         r = line.strip()
         m = re.match('^'+RE_ALIAS+'$', r)
         address = str(m.group(2) if m else r)
@@ -178,7 +178,6 @@ class PayToEdit(CompletionTextEdit, ScanQRTextEdit):
 
             _type, addr = self.payto_address
             self.outputs = [TxOutput(_type, addr, amount)]
-
         return self.outputs[:]
 
     def lines(self):

@@ -26,6 +26,9 @@
 import webbrowser
 import datetime
 
+from PyQt5.QtGui import QBrush, QColor
+from PyQt5.QtWidgets import QComboBox, QGridLayout
+
 from electrum_sibcoin.address_synchronizer import TX_HEIGHT_LOCAL
 from .util import *
 from electrum_sibcoin.i18n import _

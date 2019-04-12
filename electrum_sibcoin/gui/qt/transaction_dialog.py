@@ -27,10 +27,6 @@ import datetime
 import json
 import traceback
 
-from PyQt5.QtCore import *
-from PyQt5.QtGui import *
-from PyQt5.QtWidgets import *
-
 import qrcode
 from qrcode import exceptions
 

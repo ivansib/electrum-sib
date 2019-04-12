@@ -6,9 +6,13 @@ import queue
 from collections import namedtuple
 from functools import partial
 
-from PyQt5.QtGui import *
-from PyQt5.QtCore import *
-from PyQt5.QtWidgets import *
+from PyQt5.QtGui import QPalette, QIcon, QFont, QColor, QCursor, QPixmap
+from PyQt5.QtCore import QThread, pyqtSignal, Qt, QSize, QCoreApplication
+from PyQt5.QtWidgets import (QPushButton, QLabel, QHBoxLayout, QMessageBox, QDialog,
+                             QStyledItemDelegate, QTreeWidget, QWidget, QLineEdit,
+                             QPlainTextEdit, QTreeWidgetItem, QToolButton, QHeaderView,
+                             QStyle, QVBoxLayout, QGroupBox, QButtonGroup, QRadioButton,
+                             QToolTip, QFileDialog)
 
 from electrum_sibcoin.i18n import _
 from electrum_sibcoin.util import FileImportFailed, FileExportFailed

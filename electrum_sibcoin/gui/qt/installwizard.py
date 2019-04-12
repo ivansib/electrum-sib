@@ -1,12 +1,11 @@
-
 import os
 import sys
 import threading
 import traceback
 
-from PyQt5.QtCore import *
-from PyQt5.QtGui import *
-from PyQt5.QtWidgets import *
+from PyQt5.QtCore import QEventLoop, QRect
+from PyQt5.QtGui import QPen, QPainter
+from PyQt5.QtWidgets import QScrollArea, QFileDialog, QSlider, QGridLayout
 
 from electrum_sibcoin.wallet import Wallet
 from electrum_sibcoin.storage import WalletStorage

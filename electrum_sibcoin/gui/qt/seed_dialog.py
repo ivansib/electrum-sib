@@ -23,6 +23,9 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from PyQt5.QtWidgets import QVBoxLayout, QCheckBox, QCompleter
+from PyQt5.QtGui import QPixmap
+
 from electrum_sibcoin.i18n import _
 from electrum_sibcoin.mnemonic import Mnemonic
 import electrum_sibcoin.old_mnemonic

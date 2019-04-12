@@ -25,10 +25,7 @@
 
 import socket
 
-from PyQt5.QtGui import *
-from PyQt5.QtCore import *
-from PyQt5.QtWidgets import *
-import PyQt5.QtCore as QtCore
+from PyQt5.QtWidgets import (QTabWidget, QGridLayout, QCheckBox, QComboBox)
 
 from electrum_sibcoin.i18n import _
 from electrum_sibcoin import constants

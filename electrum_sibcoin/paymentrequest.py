@@ -31,7 +31,6 @@ import requests
 
 import urllib.parse
 
-
 try:
     from . import paymentrequest_pb2 as pb2
 except ImportError:

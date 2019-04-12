@@ -28,7 +28,8 @@ import traceback
 from PyQt5.QtCore import QObject
 import PyQt5.QtCore as QtCore
 from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import *
+from PyQt5.QtWidgets import (QWidget, QVBoxLayout, QLabel, QPushButton,
+                             QTextEdit, QMessageBox, QHBoxLayout) 
 
 from electrum_sibcoin.i18n import _
 from electrum_sibcoin.base_crash_reporter import BaseCrashReporter

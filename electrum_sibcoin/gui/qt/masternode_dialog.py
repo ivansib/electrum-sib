@@ -3,8 +3,7 @@ from datetime import datetime
 import os
 import traceback
 
-from PyQt5.QtGui import *
-from PyQt5.QtCore import *
+from PyQt5.QtWidgets import QTabWidget, QFileDialog
 
 from electrum_sibcoin import bitcoin
 from electrum_sibcoin.i18n import _

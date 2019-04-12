@@ -25,6 +25,10 @@ from decimal import Decimal
 import binascii
 
 from PyQt5.QtPrintSupport import QPrinter
+from PyQt5.QtWidgets import QGridLayout
+from PyQt5.QtGui import (QImage, QBitmap, qRgba, QPainter, QPen,
+                         QPainterPath, QFontDatabase, QDesktopServices)
+from PyQt5.QtCore import QPoint, QRectF, QSizeF, QUrl
 
 from electrum_sibcoin.plugin import BasePlugin, hook
 from electrum_sibcoin.i18n import _

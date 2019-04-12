@@ -24,6 +24,8 @@
 # SOFTWARE.
 import webbrowser
 
+from PyQt5.QtWidgets import QAbstractItemView, QComboBox, QMenu
+
 from electrum_sibcoin.i18n import _
 from electrum_sibcoin.util import block_explorer_URL
 from electrum_sibcoin.plugin import run_hook

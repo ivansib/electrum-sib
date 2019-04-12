@@ -1,8 +1,5 @@
-
 from electrum_sibcoin.i18n import _
 from electrum_sibcoin.plugin import run_hook
-from PyQt5.QtGui import *
-from PyQt5.QtCore import *
 from PyQt5.QtWidgets import QFileDialog
 
 from .util import ButtonsTextEdit, MessageBoxMixin, ColorScheme

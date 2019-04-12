@@ -32,12 +32,14 @@ from decimal import Decimal
 import base64
 from functools import partial
 
-from PyQt5.QtGui import *
-from PyQt5.QtCore import *
-import PyQt5.QtCore as QtCore
+from PyQt5.QtGui import QIcon, QKeySequence, QCursor
+from PyQt5.QtCore import qVersion, QSize, QStringListModel
 
 from .exception_window import Exception_Hook
-from PyQt5.QtWidgets import *
+from PyQt5.QtWidgets import (QMainWindow, QStatusBar, QTabWidget, QGridLayout,
+                             QCompleter, QVBoxLayout, QComboBox, QSizePolicy,
+                             QMenuBar, QAction, QShortcut, QSpinBox, QCheckBox,
+                             QScrollArea, QTextEdit, QFileDialog, QInputDialog)
 
 from electrum_sibcoin  import (keystore, simple_config, ecc, constants, util, bitcoin, commands,
                             coinchooser, paymentrequest)
