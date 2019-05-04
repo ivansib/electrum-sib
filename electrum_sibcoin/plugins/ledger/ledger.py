@@ -4,16 +4,18 @@ import sys
 import traceback
 
 from electrum_sibcoin import constants
+from electrum_sibcoin import ecc
 from electrum_sibcoin.bitcoin import (TYPE_ADDRESS, int_to_hex, var_int,
                                    b58_address_to_hash160,
                                    hash160_to_b58_address)
-from electrum_sibcoin.bip32 import serialize_xpub
+from electrum_sibcoin.bip32 import BIP32Node
 from electrum_sibcoin.i18n import _
 from electrum_sibcoin.keystore import Hardware_KeyStore
 from electrum_sibcoin.transaction import Transaction
 from electrum_sibcoin.wallet import Standard_Wallet
-from electrum_sibcoin.util import print_error, bfh, bh2u, versiontuple, UserFacingException
+from electrum_sibcoin.util import bfh, bh2u, versiontuple, UserFacingException
 from electrum_sibcoin.base_wizard import ScriptTypeNotSupported
+from electrum_sibcoin.logging import get_logger
 
 
 def setAlternateCoinVersions(self, regular, p2sh):
@@ -23,6 +25,10 @@ def setAlternateCoinVersions(self, regular, p2sh):
 
 from ..hw_wallet import HW_PluginBase
 from ..hw_wallet.plugin import is_any_tx_output_on_change_branch
+
+
+_logger = get_logger(__name__)
+
 
 try:
     import hid
@@ -204,8 +210,12 @@ class Ledger_Client():
         depth = len(splitPath)
         lastChild = splitPath[len(splitPath) - 1].split('\'')
         childnum = int(lastChild[0]) if len(lastChild) == 1 else 0x80000000 | int(lastChild[0])
-        xpub = serialize_xpub(xtype, nodeData['chainCode'], publicKey, depth, self.i4b(fingerprint), self.i4b(childnum))
-        return xpub
+        return BIP32Node(xtype=xtype,
+                         eckey=ecc.ECPubkey(publicKey),
+                         chaincode=nodeData['chainCode'],
+                         depth=depth,
+                         fingerprint=self.i4b(fingerprint),
+                         child_number=self.i4b(childnum)).to_xpub()
 
     def has_detached_pin_support(self, client):
         try:
@@ -320,7 +330,7 @@ class Ledger_KeyStore(Hardware_KeyStore):
         return self.plugin.get_client(self)
 
     def give_error(self, message, clear_client = False):
-        print_error(message)
+        _logger.info(message)
         if not self.signing:
             self.handler.show_error(message)
         else:
@@ -587,10 +597,10 @@ class Ledger_KeyStore(Hardware_KeyStore):
                     e,
                     _('Your device might not have support for this functionality.')))
             else:
-                traceback.print_exc(file=sys.stderr)
+                self.logger.exception('')
                 self.handler.show_error(e)
         except BaseException as e:
-            traceback.print_exc(file=sys.stderr)
+            self.logger.exception('')
             self.handler.show_error(e)
         finally:
             self.handler.finished()
@@ -605,7 +615,14 @@ class LedgerPlugin(HW_PluginBase):
                    (0x2581, 0x3b7c), # HW.1 ledger production
                    (0x2581, 0x4b7c), # HW.1 ledger test
                    (0x2c97, 0x0000), # Blue
-                   (0x2c97, 0x0001)  # Nano-S
+                   (0x2c97, 0x0001), # Nano-S
+                   (0x2c97, 0x0004), # Nano-X
+                   (0x2c97, 0x0005), # RFU
+                   (0x2c97, 0x0006), # RFU
+                   (0x2c97, 0x0007), # RFU
+                   (0x2c97, 0x0008), # RFU
+                   (0x2c97, 0x0009), # RFU
+                   (0x2c97, 0x000a)  # RFU
                  ]
     SUPPORTED_XTYPES = ('standard', )
 

@@ -41,8 +41,9 @@ from PyQt5.QtWidgets import (QMenu, QHeaderView, QLabel, QMessageBox,
 
 from electrum_sibcoin.address_synchronizer import TX_HEIGHT_LOCAL
 from electrum_sibcoin.i18n import _
-from electrum_sibcoin.util import (block_explorer_URL, profiler, print_error, TxMinedInfo,
-                                OrderedDictWithIndex, PrintError, timestamp_to_datetime)
+from electrum_sibcoin.util import (block_explorer_URL, profiler, TxMinedInfo,
+                                OrderedDictWithIndex, timestamp_to_datetime)
+from electrum_sibcoin.logging import get_logger, Logger
 
 from .util import (read_QIcon, MONOSPACE_FONT, Buttons, CancelButton, OkButton,
                    filename_field, MyTreeView, AcceptFileDragDrop, WindowModalDialog,
@@ -51,10 +52,14 @@ from .util import (read_QIcon, MONOSPACE_FONT, Buttons, CancelButton, OkButton,
 if TYPE_CHECKING:
     from electrum_dash.wallet import Abstract_Wallet
 
+
+_logger = get_logger(__name__)
+
+
 try:
     from electrum_sibcoin.plot import plot_history, NothingToPlotException
 except:
-    print_error("qt/history_list: could not import electrum_sibcoin.plot. This feature needs matplotlib to be installed.")
+    _logger.info("could not import electrum_sibcoin.plot. This feature needs matplotlib to be installed.")
     plot_history = None
 
 # note: this list needs to be kept in sync with another in kivy
@@ -74,13 +79,14 @@ TX_ICONS = [
 class HistoryColumns(IntEnum):
     STATUS_ICON = 0
     STATUS_TEXT = 1
-    DESCRIPTION = 2
-    COIN_VALUE = 3
-    RUNNING_COIN_BALANCE = 4
-    FIAT_VALUE = 5
-    FIAT_ACQ_PRICE = 6
-    FIAT_CAP_GAINS = 7
-    TXID = 8
+    DIP2 = 2
+    DESCRIPTION = 3
+    COIN_VALUE = 4
+    RUNNING_COIN_BALANCE = 5
+    FIAT_VALUE = 6
+    FIAT_ACQ_PRICE = 7
+    FIAT_CAP_GAINS = 8
+    TXID = 9
 
 class HistorySortModel(QSortFilterProxyModel):
     def lessThan(self, source_left: QModelIndex, source_right: QModelIndex):
@@ -97,10 +103,11 @@ class HistorySortModel(QSortFilterProxyModel):
         except:
             return False
 
-class HistoryModel(QAbstractItemModel, PrintError):
+class HistoryModel(QAbstractItemModel, Logger):
 
     def __init__(self, parent):
-        super().__init__(parent)
+        QAbstractItemModel.__init__(self, parent)
+        Logger.__init__(self)
         self.parent = parent
         self.view = None  # type: HistoryList
         self.transactions = OrderedDictWithIndex()
@@ -145,6 +152,7 @@ class HistoryModel(QAbstractItemModel, PrintError):
                     # txpos breaks ties for verified same block txns
                     (status, conf, -height, -txpos),
                 HistoryColumns.STATUS_TEXT: status_str,
+                HistoryColumns.DIP2: tx_item.get('dip2', ''),
                 HistoryColumns.DESCRIPTION: tx_item['label'],
                 HistoryColumns.COIN_VALUE:  tx_item['value'].value,
                 HistoryColumns.RUNNING_COIN_BALANCE: tx_item['balance'].value,
@@ -162,7 +170,7 @@ class HistoryModel(QAbstractItemModel, PrintError):
                 return QVariant(read_QIcon(TX_ICONS[status]))
             elif col == HistoryColumns.STATUS_ICON and role == Qt.ToolTipRole:
                 return QVariant(str(conf) + _(" confirmation" + ("s" if conf != 1 else "")))
-            elif col > HistoryColumns.DESCRIPTION and role == Qt.TextAlignmentRole:
+            elif col != HistoryColumns.DESCRIPTION and role == Qt.TextAlignmentRole:
                 return QVariant(Qt.AlignRight | Qt.AlignVCenter)
             elif col != HistoryColumns.DESCRIPTION and role == Qt.FontRole:
                 monospace_font = QFont(MONOSPACE_FONT)
@@ -170,6 +178,9 @@ class HistoryModel(QAbstractItemModel, PrintError):
             elif col == HistoryColumns.DESCRIPTION and role == Qt.DecorationRole \
                     and self.parent.wallet.invoices.paid.get(tx_hash):
                 return QVariant(read_QIcon("seal"))
+            elif col == HistoryColumns.DIP2 and role == Qt.ForegroundRole:
+                dip2_brush = QBrush(QColor("#1c75bc"))
+                return QVariant(dip2_brush)
             elif col in (HistoryColumns.DESCRIPTION, HistoryColumns.COIN_VALUE) \
                     and role == Qt.ForegroundRole and tx_item['value'].value < 0:
                 red_brush = QBrush(QColor("#BC1E1E"))
@@ -181,6 +192,8 @@ class HistoryModel(QAbstractItemModel, PrintError):
             return QVariant()
         if col == HistoryColumns.STATUS_TEXT:
             return QVariant(status_str)
+        elif col == HistoryColumns.DIP2:
+            return QVariant(tx_item.get('dip2', ''))
         elif col == HistoryColumns.DESCRIPTION:
             return QVariant(tx_item['label'])
         elif col == HistoryColumns.COIN_VALUE:
@@ -224,7 +237,7 @@ class HistoryModel(QAbstractItemModel, PrintError):
 
     @profiler
     def refresh(self, reason: str):
-        self.print_error(f"refreshing... reason: {reason}")
+        self.logger.info(f"refreshing... reason: {reason}")
         assert self.parent.gui_thread == threading.current_thread(), 'must be called from GUI thread'
         assert self.view, 'view not set'
         selected = self.view.selectionModel().currentIndex()
@@ -249,9 +262,7 @@ class HistoryModel(QAbstractItemModel, PrintError):
         self.endInsertRows()
         if selected_row:
             self.view.selectionModel().select(self.createIndex(selected_row, 0), QItemSelectionModel.Rows | QItemSelectionModel.SelectCurrent)
-        f = self.view.current_filter
-        if f:
-            self.view.filter(f)
+        self.view.filter()
         # update summary
         self.summary = r['summary']
         if not self.view.years and self.transactions:
@@ -279,6 +290,8 @@ class HistoryModel(QAbstractItemModel, PrintError):
         set_visible(HistoryColumns.FIAT_VALUE, history)
         set_visible(HistoryColumns.FIAT_ACQ_PRICE, history and cap_gains)
         set_visible(HistoryColumns.FIAT_CAP_GAINS, history and cap_gains)
+        show_dip2 = self.view.config.get('show_dip2_tx_type', False)
+        set_visible(HistoryColumns.DIP2, show_dip2)
 
     def update_fiat(self, row, idx):
         tx_item = self.transactions.value_from_pos(row)
@@ -329,6 +342,7 @@ class HistoryModel(QAbstractItemModel, PrintError):
         return {
             HistoryColumns.STATUS_ICON: '',
             HistoryColumns.STATUS_TEXT: _('Date'),
+            HistoryColumns.DIP2: _('DIP2'),
             HistoryColumns.DESCRIPTION: _('Description'),
             HistoryColumns.COIN_VALUE: _('Amount'),
             HistoryColumns.RUNNING_COIN_BALANCE: _('Balance'),
@@ -353,6 +367,7 @@ class HistoryModel(QAbstractItemModel, PrintError):
 
 class HistoryList(MyTreeView, AcceptFileDragDrop):
     filter_columns = [HistoryColumns.STATUS_TEXT,
+                      HistoryColumns.DIP2,
                       HistoryColumns.DESCRIPTION,
                       HistoryColumns.COIN_VALUE,
                       HistoryColumns.TXID]
@@ -482,26 +497,26 @@ class HistoryList(MyTreeView, AcceptFileDragDrop):
         grid = QGridLayout()
         grid.addWidget(QLabel(_("Start")), 0, 0)
         grid.addWidget(QLabel(self.format_date(start_date)), 0, 1)
-        grid.addWidget(QLabel(str(h.get('start_fiat_value')) + '/SIB'), 0, 2)
+        grid.addWidget(QLabel(str(h.get('fiat_start_value')) + '/SIB'), 0, 2)
         grid.addWidget(QLabel(_("Initial balance")), 1, 0)
         grid.addWidget(QLabel(format_amount(h['start_balance'])), 1, 1)
-        grid.addWidget(QLabel(str(h.get('start_fiat_balance'))), 1, 2)
+        grid.addWidget(QLabel(str(h.get('fiat_start_balance'))), 1, 2)
         grid.addWidget(QLabel(_("End")), 2, 0)
         grid.addWidget(QLabel(self.format_date(end_date)), 2, 1)
-        grid.addWidget(QLabel(str(h.get('end_fiat_value')) + '/SIB'), 2, 2)
+        grid.addWidget(QLabel(str(h.get('fiat_end_value')) + '/SIB'), 2, 2)
         grid.addWidget(QLabel(_("Final balance")), 4, 0)
         grid.addWidget(QLabel(format_amount(h['end_balance'])), 4, 1)
-        grid.addWidget(QLabel(str(h.get('end_fiat_balance'))), 4, 2)
+        grid.addWidget(QLabel(str(h.get('fiat_end_balance'))), 4, 2)
         grid.addWidget(QLabel(_("Income")), 5, 0)
-        grid.addWidget(QLabel(format_amount(h.get('income'))), 5, 1)
-        grid.addWidget(QLabel(str(h.get('fiat_income'))), 5, 2)
+        grid.addWidget(QLabel(format_amount(h.get('incoming'))), 5, 1)
+        grid.addWidget(QLabel(str(h.get('fiat_incoming'))), 5, 2)
         grid.addWidget(QLabel(_("Expenditures")), 6, 0)
-        grid.addWidget(QLabel(format_amount(h.get('expenditures'))), 6, 1)
-        grid.addWidget(QLabel(str(h.get('fiat_expenditures'))), 6, 2)
+        grid.addWidget(QLabel(format_amount(h.get('outgoing'))), 6, 1)
+        grid.addWidget(QLabel(str(h.get('fiat_outgoing'))), 6, 2)
         grid.addWidget(QLabel(_("Capital gains")), 7, 0)
-        grid.addWidget(QLabel(str(h.get('capital_gains'))), 7, 2)
+        grid.addWidget(QLabel(str(h.get('fiat_capital_gains'))), 7, 2)
         grid.addWidget(QLabel(_("Unrealized gains")), 8, 0)
-        grid.addWidget(QLabel(str(h.get('unrealized_gains', ''))), 8, 2)
+        grid.addWidget(QLabel(str(h.get('fiat_unrealized_gains', ''))), 8, 2)
         vbox.addLayout(grid)
         vbox.addLayout(Buttons(CloseButton(d)))
         d.setLayout(vbox)
@@ -547,7 +562,7 @@ class HistoryList(MyTreeView, AcceptFileDragDrop):
             self.show_transaction(tx_item['txid'])
 
     def show_transaction(self, tx_hash):
-        tx = self.wallet.transactions.get(tx_hash)
+        tx = self.wallet.db.get_transaction(tx_hash)
         if not tx:
             return
         label = self.wallet.get_label(tx_hash) or None # prefer 'None' if not defined (force tx dialog to hide Description field if missing)
@@ -568,7 +583,9 @@ class HistoryList(MyTreeView, AcceptFileDragDrop):
             column_title = self.hm.headerData(column, Qt.Horizontal, Qt.DisplayRole)
             column_data = self.hm.data(idx, Qt.DisplayRole).value()
         tx_hash = tx_item['txid']
-        tx = self.wallet.transactions[tx_hash]
+        tx = self.wallet.db.get_transaction(tx_hash)
+        if not tx:
+            return
         tx_URL = block_explorer_URL(self.config, 'tx', tx_hash)
         height = self.wallet.get_tx_height(tx_hash).height
         is_relevant, is_mine, v, fee = self.wallet.get_wallet_delta(tx)
@@ -577,7 +594,12 @@ class HistoryList(MyTreeView, AcceptFileDragDrop):
         menu = QMenu()
         if height == TX_HEIGHT_LOCAL:
             menu.addAction(_("Remove"), lambda: self.remove_local_tx(tx_hash))
+
+        amount_columns = [HistoryColumns.COIN_VALUE, HistoryColumns.RUNNING_COIN_BALANCE, HistoryColumns.FIAT_VALUE, HistoryColumns.FIAT_ACQ_PRICE, HistoryColumns.FIAT_CAP_GAINS]
+        if column in amount_columns:
+            column_data = column_data.strip()
         menu.addAction(_("Copy {}").format(column_title), lambda: self.parent.app.clipboard().setText(column_data))
+
         for c in self.editable_columns:
             if self.isColumnHidden(c): continue
             label = self.hm.headerData(c, Qt.Horizontal, Qt.DisplayRole)
@@ -596,15 +618,14 @@ class HistoryList(MyTreeView, AcceptFileDragDrop):
         to_delete |= self.wallet.get_depending_transactions(delete_tx)
         question = _("Are you sure you want to remove this transaction?")
         if len(to_delete) > 1:
-            question = _(
-                "Are you sure you want to remove this transaction and {} child transactions?".format(len(to_delete) - 1)
-            )
+            question = (_("Are you sure you want to remove this transaction and {} child transactions?")
+                        .format(len(to_delete) - 1))
         answer = QMessageBox.question(self.parent, _("Please confirm"), question, QMessageBox.Yes, QMessageBox.No)
         if answer == QMessageBox.No:
             return
         for tx in to_delete:
             self.wallet.remove_transaction(tx)
-        self.wallet.save_transactions(write=True)
+        self.wallet.storage.write()
         # need to update at least: history_list, utxo_list, address_list
         self.parent.need_update.set()
 

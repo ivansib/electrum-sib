@@ -8,16 +8,22 @@ import time
 import csv
 import decimal
 from decimal import Decimal
-import concurrent.futures
-import traceback
-from typing import Sequence
+from typing import Sequence, Optional
+
+from aiorpcx.curio import timeout_after, TaskTimeout, TaskGroup
 
 from .bitcoin import COIN
 from .i18n import _
-from .util import (PrintError, ThreadJob, make_dir, log_exceptions,
+from .util import (ThreadJob, make_dir, log_exceptions,
                    make_aiohttp_session, resource_path)
 from .network import Network
 from .simple_config import SimpleConfig
+from .logging import Logger
+
+
+DEFAULT_ENABLED = False
+DEFAULT_CURRENCY = "USD"
+DEFAULT_EXCHANGE = "CoinGecko"  # default exchange should ideally provide historical rates
 
 
 # See https://en.wikipedia.org/wiki/ISO_4217
@@ -31,13 +37,10 @@ CCY_PRECISIONS = {'BHD': 3, 'BIF': 0, 'BYR': 0, 'CLF': 4, 'CLP': 0,
                   'BTC': 8, 'ETH': 8}
 
 
-DEFAULT_EXCHANGE = 'Livecoin'
-DEFAULT_CCY = 'RUB'
-
-
-class ExchangeBase(PrintError):
+class ExchangeBase(Logger):
 
     def __init__(self, on_quotes, on_history):
+        Logger.__init__(self)
         self.history = {}
         self.quotes = {}
         self.on_quotes = on_quotes
@@ -46,15 +49,21 @@ class ExchangeBase(PrintError):
     async def get_raw(self, site, get_string):
         # APIs must have https
         url = ''.join(['https://', site, get_string])
-        async with make_aiohttp_session(Network.get_instance().proxy) as session:
+        network = Network.get_instance()
+        proxy = network.proxy if network else None
+        async with make_aiohttp_session(proxy) as session:
             async with session.get(url) as response:
+                response.raise_for_status()
                 return await response.text()
 
     async def get_json(self, site, get_string):
         # APIs must have https
         url = ''.join(['https://', site, get_string])
-        async with make_aiohttp_session(Network.get_instance().proxy) as session:
+        network = Network.get_instance()
+        proxy = network.proxy if network else None
+        async with make_aiohttp_session(proxy) as session:
             async with session.get(url) as response:
+                response.raise_for_status()
                 # set content_type to None to disable checking MIME type
                 return await response.json(content_type=None)
 
@@ -66,46 +75,41 @@ class ExchangeBase(PrintError):
     def name(self):
         return self.__class__.__name__
 
-    @log_exceptions
     async def update_safe(self, ccy):
         try:
-            self.print_error("getting fx quotes for", ccy)
+            self.logger.info(f"getting fx quotes for {ccy}")
             self.quotes = await self.get_rates(ccy)
-            self.print_error("received fx quotes")
+            self.logger.info("received fx quotes")
         except BaseException as e:
-            self.print_error("failed fx quotes:", repr(e))
+            self.logger.info(f"failed fx quotes: {repr(e)}")
             self.quotes = {}
         self.on_quotes()
 
-    def update(self, ccy):
-        asyncio.get_event_loop().create_task(self.update_safe(ccy))
-
-    def read_historical_rates(self, ccy, cache_dir):
+    def read_historical_rates(self, ccy, cache_dir) -> Optional[dict]:
         filename = os.path.join(cache_dir, self.name() + '_'+ ccy)
-        if os.path.exists(filename):
-            timestamp = os.stat(filename).st_mtime
-            try:
-                with open(filename, 'r', encoding='utf-8') as f:
-                    h = json.loads(f.read())
-                h['timestamp'] = timestamp
-            except:
-                h = None
-        else:
-            h = None
-        if h:
-            self.history[ccy] = h
-            self.on_history()
+        if not os.path.exists(filename):
+            return None
+        timestamp = os.stat(filename).st_mtime
+        try:
+            with open(filename, 'r', encoding='utf-8') as f:
+                h = json.loads(f.read())
+        except:
+            return None
+        if not h:  # e.g. empty dict
+            return None
+        h['timestamp'] = timestamp
+        self.history[ccy] = h
+        self.on_history()
         return h
 
     @log_exceptions
     async def get_historical_rates_safe(self, ccy, cache_dir):
         try:
-            self.print_error("requesting fx history for", ccy)
+            self.logger.info(f"requesting fx history for {ccy}")
             h = await self.request_history(ccy)
-            self.print_error("received fx history for", ccy)
+            self.logger.info(f"received fx history for {ccy}")
         except BaseException as e:
-            self.print_error("failed fx history:", e)
-            #traceback.print_exc()
+            self.logger.info(f"failed fx history: {repr(e)}")
             return
         filename = os.path.join(cache_dir, self.name() + '_' + ccy)
         with open(filename, 'w', encoding='utf-8') as f:
@@ -129,8 +133,14 @@ class ExchangeBase(PrintError):
     def historical_rate(self, ccy, d_t):
         return self.history.get(ccy, {}).get(d_t.strftime('%Y-%m-%d'), 'NaN')
 
-    def get_currencies(self):
-        rates = self.get_rates('')
+    async def request_history(self, ccy):
+        raise NotImplementedError()  # implemented by subclasses
+
+    async def get_rates(self, ccy):
+        raise NotImplementedError()  # implemented by subclasses
+
+    async def get_currencies(self):
+        rates = await self.get_rates('')
         return sorted([str(a) for (a, b) in rates.items() if b is not None and len(a)==3])
 
 class Livecoin(ExchangeBase):
@@ -209,26 +219,39 @@ def dictinvert(d):
     return inv
 
 def get_exchanges_and_currencies():
-    import os, json
-    path = os.path.join(os.path.dirname(__file__), 'currencies.json')
+    # load currencies.json from disk
+    path = resource_path('currencies.json')
     try:
         with open(path, 'r', encoding='utf-8') as f:
             return json.loads(f.read())
     except:
         pass
+    # or if not present, generate it now.
+    print("cannot find currencies.json. will regenerate it now.")
     d = {}
     is_exchange = lambda obj: (inspect.isclass(obj)
                                and issubclass(obj, ExchangeBase)
                                and obj != ExchangeBase)
     exchanges = dict(inspect.getmembers(sys.modules[__name__], is_exchange))
-    for name, klass in exchanges.items():
-        exchange = klass(None, None)
+
+    async def get_currencies_safe(name, exchange):
         try:
-            d[name] = exchange.get_currencies()
+            d[name] = await exchange.get_currencies()
             print(name, "ok")
         except:
             print(name, "error")
-            continue
+
+    async def query_all_exchanges_for_their_ccys_over_network():
+        async with timeout_after(10):
+            async with TaskGroup() as group:
+                for name, klass in exchanges.items():
+                    exchange = klass(None, None)
+                    await group.spawn(get_currencies_safe(name, exchange))
+    loop = asyncio.get_event_loop()
+    try:
+        loop.run_until_complete(query_all_exchanges_for_their_ccys_over_network())
+    except Exception as e:
+        pass
     with open(path, 'w', encoding='utf-8') as f:
         f.write(json.dumps(d, indent=4, sort_keys=True))
     return d
@@ -252,6 +275,7 @@ def get_exchanges_by_ccy(history=True):
 class FxThread(ThreadJob):
 
     def __init__(self, config: SimpleConfig, network: Network):
+        ThreadJob.__init__(self)
         self.config = config
         self.network = network
         if self.network:
@@ -294,9 +318,15 @@ class FxThread(ThreadJob):
 
     async def run(self):
         while True:
+            # approx. every 2.5 minutes, refresh spot price
             try:
-                await asyncio.wait_for(self._trigger.wait(), 150)
-            except concurrent.futures.TimeoutError:
+                async with timeout_after(150):
+                    await self._trigger.wait()
+                    self._trigger.clear()
+                # we were manually triggered, so get historical rates
+                if self.is_enabled() and self.show_history():
+                    self.exchange.get_historical_rates(self.ccy, self.cache_dir)
+            except TaskTimeout:
                 pass
             else:
                 self._trigger.clear()
@@ -304,17 +334,17 @@ class FxThread(ThreadJob):
                     if self.show_history():
                         self.exchange.get_historical_rates(self.ccy, self.cache_dir)
             if self.is_enabled():
-                self.exchange.update(self.ccy)
+                await self.exchange.update_safe(self.ccy)
 
     def is_enabled(self):
-        return bool(self.config.get('use_exchange_rate'))
+        return bool(self.config.get('use_exchange_rate', DEFAULT_ENABLED))
 
     def set_enabled(self, b):
         self.config.set_key('use_exchange_rate', bool(b))
         self.trigger_update()
 
-    def get_history_config(self):
-        return bool(self.config.get('history_rates'))
+    def get_history_config(self, *, default=False):
+        return bool(self.config.get('history_rates', default))
 
     def set_history_config(self, b):
         self.config.set_key('history_rates', bool(b))
@@ -422,3 +452,6 @@ class FxThread(ThreadJob):
         from .util import timestamp_to_datetime
         date = timestamp_to_datetime(timestamp)
         return self.history_rate(date)
+
+
+assert globals().get(DEFAULT_EXCHANGE), f"default exchange {DEFAULT_EXCHANGE} does not exist"

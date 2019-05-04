@@ -4,10 +4,11 @@ import datetime
 
 from electrum_sibcoin import WalletStorage, Wallet
 from electrum_sibcoin.dash_tx import SPEC_TX_NAMES
-from electrum_sibcoin.util import format_satoshis, set_verbosity
+from electrum_sibcoin.util import format_satoshis
 from electrum_sibcoin.bitcoin import is_address, COIN, TYPE_ADDRESS
 from electrum_sibcoin.transaction import TxOutput
 from electrum_sibcoin.network import TxBroadcastError, BestEffortRequestFailed
+from electrum_sibcoin.logging import console_stderr_handler
 
 _ = lambda x:x  # i18n
 
@@ -31,7 +32,7 @@ class ElectrumGui:
         self.done = 0
         self.last_balance = ""
 
-        set_verbosity(False)
+        console_stderr_handler.setLevel(logging.CRITICAL)
 
         self.str_recipient = ""
         self.str_description = ""
