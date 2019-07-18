@@ -1,6 +1,7 @@
-from decimal import Decimal
 import getpass
-import datetime
+import logging
+from datetime import datetime
+from decimal import Decimal
 
 from electrum_sibcoin import WalletStorage, Wallet
 from electrum_sibcoin.sibcoin_tx import SPEC_TX_NAMES
@@ -23,7 +24,7 @@ class ElectrumGui:
         self.network = daemon.network
         storage = WalletStorage(config.get_wallet_path())
         if not storage.file_exists:
-            print("Wallet not found. try 'electrum-sibcoin create'")
+            print("Wallet not found. try 'electrum-dash create'")
             exit()
         if storage.is_encrypted():
             password = getpass.getpass('Password:', stream=None)
@@ -95,51 +96,55 @@ class ElectrumGui:
         messages = []
 
         hist_list = reversed(self.wallet.get_history(config=self.config))
+        show_dip2 = self.config.get('show_dip2_tx_type', False)
+        if show_dip2:
+            width = [20, 18, 22, 14, 14]
+            wdelta = (80 - sum(width) - 5) // 3
+            format_str = ("%" + "%d" % width[0] + "s" +
+                          "%" + "%d" % width[1] + "s" +
+                          "%" + "%d" % (width[2] + wdelta) + "s" +
+                          "%" + "%d" % (width[3] + wdelta) + "s" +
+                          "%" + "%d" % (width[4] + wdelta) + "s")
+        else:
+            width = [20, 40, 14, 14]
+            wdelta = (80 - sum(width) - 4) // 3
+            format_str = ("%" + "%d" % width[0] + "s" +
+                          "%" + "%d" % (width[1] + wdelta) + "s" +
+                          "%" + "%d" % (width[2] + wdelta) + "s" +
+                          "%" + "%d" % (width[3] + wdelta) + "s")
         for tx_hash, tx_type, tx_mined_status, delta, balance in hist_list:
             if tx_mined_status.conf:
                 timestamp = tx_mined_status.timestamp
                 try:
-                    time_str = datetime.datetime.fromtimestamp(timestamp).isoformat(' ')[:-3]
+                    dttm = datetime.fromtimestamp(timestamp)
+                    time_str = dttm.isoformat(' ')[:-3]
                 except Exception:
                     time_str = "unknown"
             else:
                 time_str = 'unconfirmed'
 
             label = self.wallet.get_label(tx_hash)
-            if self.config.get('show_dip2_tx_type', False):
+            if show_dip2:
                 tx_type_name = SPEC_TX_NAMES.get(tx_type, str(tx_type))
-                width = [20, 18, 22, 14, 14]
-                delta = (80 - sum(width) - 5) // 3
-                format_str = ("%" + "%d" % width[0] + "s" +
-                              "%" + "%d" % width[1] + "s" +
-                              "%" + "%d" % (width[2] + delta) + "s" +
-                              "%" + "%d" % (width[3] + delta) + "s" +
-                              "%" + "%d" % (width[4] + delta) + "s")
                 msg = format_str % (time_str, tx_type_name, label,
-                                    format_satoshis(value, whitespaces=True),
+                                    format_satoshis(delta, whitespaces=True),
                                     format_satoshis(balance, whitespaces=True))
                 messages.append(msg)
-                self.print_list(messages[::-1],
-                                format_str % (_("Date"), 'DIP2',
-                                              _("Description"), _("Amount"),
-                                              _("Balance")))
             else:
-                width = [20, 40, 14, 14]
-                delta = (80 - sum(width) - 4) // 3
-                format_str = ("%" + "%d" % width[0] + "s" +
-                              "%" + "%d" % (width[1] + delta) + "s" +
-                              "%" + "%d" % (width[2] + delta) + "s" +
-                              "%" + "%d" % (width[3] + delta) + "s")
                 msg = format_str % (time_str, label,
-                                    format_satoshis(value, whitespaces=True),
+                                    format_satoshis(delta, whitespaces=True),
                                     format_satoshis(balance, whitespaces=True))
                 messages.append(msg)
-                self.print_list(messages[::-1],
-                                format_str % (_("Date"),
-                                              _("Description"), _("Amount"),
-                                              _("Balance")))
-
-
+        if show_dip2:
+            self.print_list(messages[::-1],
+                            format_str % (_("Date"), 'DIP2',
+                                          _("Description"), _("Amount"),
+                                          _("Balance")))
+        else:
+            self.print_list(messages[::-1],
+                            format_str % (_("Date"),
+                                          _("Description"), _("Amount"),
+                                          _("Balance")))
 
     def print_balance(self):
         print(self.get_balance())
@@ -201,7 +206,7 @@ class ElectrumGui:
 
     def do_send(self):
         if not is_address(self.str_recipient):
-            print(_('Invalid Sibcoin address'))
+            print(_('Invalid Dash address'))
             return
         try:
             amount = int(Decimal(self.str_amount) * COIN)
@@ -251,12 +256,12 @@ class ElectrumGui:
             #self.update_contacts_tab()
 
     def network_dialog(self):
-        print("use 'electrum-sibcoin setconfig server/proxy' to change your network settings")
+        print("use 'electrum-dash setconfig server/proxy' to change your network settings")
         return True
 
 
     def settings_dialog(self):
-        print("use 'electrum-sibcoin setconfig' to change your settings")
+        print("use 'electrum-dash setconfig' to change your settings")
         return True
 
     def password_dialog(self):
