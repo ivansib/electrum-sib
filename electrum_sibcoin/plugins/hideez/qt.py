@@ -4,10 +4,10 @@ import threading
 from PyQt5.QtWidgets import (QVBoxLayout, QLabel, QGridLayout,
                              QWidget, QTabWidget)
 
-from electrum_dash.gui.qt.util import WindowModalDialog, Buttons, CloseButton
-from electrum_dash.i18n import _
-from electrum_dash.plugin import hook
-from electrum_dash.util import bh2u
+from electrum_sibcoin.gui.qt.util import WindowModalDialog, Buttons, CloseButton
+from electrum_sibcoin.i18n import _
+from electrum_sibcoin.plugin import hook
+from electrum_sibcoin.util import bh2u
 
 from ..hw_wallet.qt import QtHandlerBase, QtPluginBase
 from ..hw_wallet.plugin import only_hook_if_libraries_available

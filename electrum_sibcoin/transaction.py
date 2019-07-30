@@ -42,7 +42,7 @@ from .bitcoin import (TYPE_ADDRESS, TYPE_PUBKEY, TYPE_SCRIPT, hash_160,
                       opcodes, add_number_to_script, base_decode)
 from .crypto import sha256d
 from .keystore import xpubkey_to_address, xpubkey_to_pubkey
-from .dash_tx import read_extra_payload, serialize_extra_payload, to_varbytes
+from .sibcoin_tx import read_extra_payload, serialize_extra_payload, to_varbytes
 from .logging import get_logger
 
 

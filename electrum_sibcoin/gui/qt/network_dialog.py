@@ -36,8 +36,8 @@ from PyQt5.QtGui import QFontMetrics
 
 from electrum_sibcoin.i18n import _
 from electrum_sibcoin import constants, blockchain
-from electrum_sibcoin.util import print_error
 from electrum_sibcoin.interface import serialize_server, deserialize_server
+from electrum_sibcoin.network import Network
 from electrum_sibcoin.logging import get_logger
 
 from .util import Buttons, CloseButton, HelpButton, read_QIcon, char_width_in_lineedit

@@ -52,11 +52,11 @@ import electrum_sibcoin
 from electrum_sibcoin  import (keystore, simple_config, ecc, constants, util, bitcoin, commands,
                             coinchooser, paymentrequest)
 from electrum_sibcoin.bitcoin import COIN, is_address, TYPE_ADDRESS
-from electrum_sibcoin.dash_tx import DashTxError
+from electrum_sibcoin.sibcoin_tx import DashTxError
 from electrum_sibcoin.plugin import run_hook
 from electrum_sibcoin.i18n import _
 from electrum_sibcoin.util import (format_time, format_satoshis, format_fee_satoshis,
-                                format_satoshis_plain, NotEnoughFunds, PrintError,
+                                format_satoshis_plain, NotEnoughFunds,
                                 UserCancelled, NoDynamicFeeEstimates, profiler,
                                 export_meta, import_meta, bh2u, bfh, InvalidPassword,
                                 base_units, base_units_list, base_unit_name_to_decimal_point,
@@ -93,7 +93,7 @@ from .installwizard import WIF_HELP_TEXT
 from .history_list import HistoryList, HistoryModel
 from .update_checker import UpdateCheck, UpdateCheckThread
 from .masternode_dialog import MasternodeDialog
-from .dash_qt import ExtraPayloadWidget
+from .sibcoin_qt import ExtraPayloadWidget
 from .protx_qt import create_dip3_tab
 
 
@@ -2176,7 +2176,7 @@ class ElectrumWindow(QMainWindow, MessageBoxMixin, Logger):
             'plugins': self.gui_object.plugins,
             'window': self,
             'config': self.config,
-            'electrum': electrum_dash,
+            'electrum': electrum_sibcoin,
             'daemon': self.gui_object.daemon,
             'util': util,
             'bitcoin': bitcoin,

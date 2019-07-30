@@ -15,8 +15,8 @@ from electrum_sibcoin.util import profiler, InvalidPassword, send_exception_to_c
 from electrum_sibcoin.plugin import run_hook
 from electrum_sibcoin.util import format_satoshis, format_satoshis_plain, format_fee_satoshis
 from electrum_sibcoin.paymentrequest import PR_UNPAID, PR_PAID, PR_UNKNOWN, PR_EXPIRED
-from electrum_dash import blockchain
-from electrum_dash.network import Network, TxBroadcastError, BestEffortRequestFailed
+from electrum_sibcoin import blockchain
+from electrum_sibcoin.network import Network, TxBroadcastError, BestEffortRequestFailed
 from .i18n import _
 
 from kivy.app import App

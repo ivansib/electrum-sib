@@ -4,7 +4,7 @@ from kivy.core.clipboard import Clipboard
 from kivy.app import App
 from kivy.clock import Clock
 
-from electrum_dash.gui.kivy.i18n import _
+from electrum_sibcoin.gui.kivy.i18n import _
 
 
 Builder.load_string('''

@@ -1,12 +1,12 @@
 import time
 from struct import pack
 
-from electrum_dash import ecc
-from electrum_dash.i18n import _
-from electrum_dash.util import UserCancelled
-from electrum_dash.keystore import bip39_normalize_passphrase
-from electrum_dash.bip32 import BIP32Node, convert_bip32_path_to_list_of_uint32
-from electrum_dash.logging import Logger
+from electrum_sibcoin import ecc
+from electrum_sibcoin.i18n import _
+from electrum_sibcoin.util import UserCancelled
+from electrum_sibcoin.keystore import bip39_normalize_passphrase
+from electrum_sibcoin.bip32 import BIP32Node, convert_bip32_path_to_list_of_uint32
+from electrum_sibcoin.logging import Logger
 
 
 class GuiMixin(object):

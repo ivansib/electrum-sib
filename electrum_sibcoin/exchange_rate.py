@@ -158,7 +158,7 @@ class Livecoin(ExchangeBase):
             return "RUR"
         return ccy
 
-class Coingecko(ExchangeBase):
+class CoinGecko(ExchangeBase):
     def get_rates(self, ccy):
         json = self.get_json('api.coingecko.com',
                              '/api/v3/coins/sibcoin/market_chart?vs_currency=%s&days=1' % ccy)
@@ -363,7 +363,7 @@ class FxThread(ThreadJob):
 
     def get_currency(self):
         '''Use when dynamic fetching is needed'''
-        return self.config.get("currency", DEFAULT_CCY)
+        return self.config.get("currency", DEFAULT_CURRENCY)
 
     def config_exchange(self):
         return self.config.get('use_exchange', DEFAULT_EXCHANGE)
@@ -383,7 +383,7 @@ class FxThread(ThreadJob):
 
     def set_exchange(self, name):
         class_ = globals().get(name, Bittrex)
-        self.print_error("using exchange", name)
+        self.logger.info(f"using exchange {name}")
         if self.config_exchange() != name:
             self.config.set_key('use_exchange', name, True)
         assert issubclass(class_, ExchangeBase), f"unexpected type {class_} for {name}"

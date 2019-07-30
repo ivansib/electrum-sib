@@ -2,16 +2,16 @@ from binascii import hexlify, unhexlify
 import traceback
 import sys
 
-from electrum_dash.util import (bfh, bh2u, versiontuple, UserCancelled,
+from electrum_sibcoin.util import (bfh, bh2u, versiontuple, UserCancelled,
                                 UserFacingException)
-from electrum_dash.bitcoin import TYPE_ADDRESS, TYPE_SCRIPT
-from electrum_dash.bip32 import BIP32Node
-from electrum_dash import constants
-from electrum_dash.i18n import _
-from electrum_dash.plugin import Device
-from electrum_dash.transaction import deserialize, Transaction
-from electrum_dash.keystore import Hardware_KeyStore, is_xpubkey, parse_xpubkey
-from electrum_dash.base_wizard import ScriptTypeNotSupported
+from electrum_sibcoin.bitcoin import TYPE_ADDRESS, TYPE_SCRIPT
+from electrum_sibcoin.bip32 import BIP32Node
+from electrum_sibcoin import constants
+from electrum_sibcoin.i18n import _
+from electrum_sibcoin.plugin import Device
+from electrum_sibcoin.transaction import deserialize, Transaction
+from electrum_sibcoin.keystore import Hardware_KeyStore, is_xpubkey, parse_xpubkey
+from electrum_sibcoin.base_wizard import ScriptTypeNotSupported
 
 from ..hw_wallet import HW_PluginBase
 from ..hw_wallet.plugin import (is_any_tx_output_on_change_branch,

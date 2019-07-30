@@ -13,9 +13,9 @@ from PyQt5.QtWidgets import (QTabBar, QTabWidget, QWidget, QLabel, QPushButton,
                              QStyleOptionTab, QStyle, QDialog, QGridLayout,
                              QTextEdit, QMenu)
 
-from electrum_dash.dash_tx import SPEC_PRO_REG_TX
-from electrum_dash.protx import ProRegTxExc, ProTxManagerExc
-from electrum_dash.i18n import _
+from electrum_sibcoin.sibcoin_tx import SPEC_PRO_REG_TX
+from electrum_sibcoin.protx import ProRegTxExc, ProTxManagerExc
+from electrum_sibcoin.i18n import _
 
 from .protx_wizards import Dip3MasternodeWizard, Dip3FileWizard
 from .util import icon_path, read_QIcon

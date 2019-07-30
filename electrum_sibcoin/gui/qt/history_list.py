@@ -49,7 +49,7 @@ from .util import (read_QIcon, MONOSPACE_FONT, Buttons, CancelButton, OkButton,
                    CloseButton, webopen)
 
 if TYPE_CHECKING:
-    from electrum_dash.wallet import Abstract_Wallet
+    from electrum_sibcoin.wallet import Abstract_Wallet
 
 
 _logger = get_logger(__name__)

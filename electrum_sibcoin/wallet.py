@@ -50,7 +50,7 @@ from .bitcoin import (COIN, TYPE_ADDRESS, is_address, address_to_script,
                       is_minikey, relayfee, dust_threshold, public_key_to_p2pkh)
 from .crypto import sha256d
 from . import keystore
-from .dash_tx import SPEC_TX_NAMES
+from .sibcoin_tx import SPEC_TX_NAMES
 from .keystore import load_keystore, Hardware_KeyStore
 from .util import multisig_type
 from .storage import STO_EV_PLAINTEXT, STO_EV_USER_PW, STO_EV_XPUB_PW, WalletStorage

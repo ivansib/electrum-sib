@@ -38,7 +38,7 @@ try:
     from . import paymentrequest_pb2 as pb2
 except ImportError:
     sys.exit("Error: could not find paymentrequest_pb2.py. Create it with "
-             "'protoc --proto_path=electrum_sibcoin/ --python_out=electrum_dash/ electrum_dash/paymentrequest.proto'")
+             "'protoc --proto_path=electrum_sibcoin/ --python_out=electrum_sibcoin/ electrum_sibcoin/paymentrequest.proto'")
 
 from . import bitcoin, ecc, util, transaction, x509, rsakey
 from .util import bh2u, bfh, export_meta, import_meta, make_aiohttp_session

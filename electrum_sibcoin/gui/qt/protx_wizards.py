@@ -13,12 +13,12 @@ from PyQt5.QtWidgets import (QLineEdit, QComboBox, QListWidget, QDoubleSpinBox,
                              QGroupBox, QCheckBox, QPushButton, QGridLayout,
                              QFileDialog, QWizard)
 
-from electrum_dash import dash_tx
-from electrum_dash.bitcoin import COIN, is_b58_address
-from electrum_dash.dash_tx import TxOutPoint
-from electrum_dash.protx import ProTxMN, ProTxService, ProRegTxExc
-from electrum_dash.util import bfh, bh2u
-from electrum_dash.i18n import _
+from electrum_sibcoin import sibcoin_tx
+from electrum_sibcoin.bitcoin import COIN, is_b58_address
+from electrum_sibcoin.sibcoin_tx import TxOutPoint
+from electrum_sibcoin.protx import ProTxMN, ProTxService, ProRegTxExc
+from electrum_sibcoin.util import bfh, bh2u
+from electrum_sibcoin.i18n import _
 
 from .util import MONOSPACE_FONT, icon_path, read_QIcon
 
@@ -42,7 +42,7 @@ class SComboBox(QComboBox):
 
 
 class OutputsList(QListWidget):
-    '''Widget that displays available 1000 DASH outputs.'''
+    '''Widget that displays available 4000 SIB outputs.'''
     outputSelected = pyqtSignal(dict, name='outputSelected')
     def __init__(self, parent=None):
         super(OutputsList, self).__init__(parent)
@@ -891,15 +891,15 @@ class SaveDip3WizardPage(QWizardPage):
                 if start_id == parent.OPERATION_TYPE_PAGE:
                     pro_tx = manager.prepare_pro_reg_tx(alias)
                     tx_descr = 'ProRegTx'
-                    tx_type = dash_tx.SPEC_PRO_REG_TX
+                    tx_type = sibcoin_tx.SPEC_PRO_REG_TX
                 elif start_id == parent.UPD_SRV_PAGE:
                     pro_tx = manager.prepare_pro_up_srv_tx(self.new_mn)
                     tx_descr = 'ProUpServTx'
-                    tx_type = dash_tx.SPEC_PRO_UP_SERV_TX
+                    tx_type = sibcoin_tx.SPEC_PRO_UP_SERV_TX
                 elif start_id == parent.UPD_REG_PAGE:
                     pro_tx = manager.prepare_pro_up_reg_tx(self.new_mn)
                     tx_descr = 'ProUpRegTx'
-                    tx_type = dash_tx.SPEC_PRO_UP_REG_TX
+                    tx_type = sibcoin_tx.SPEC_PRO_UP_REG_TX
             except ProRegTxExc as e:
                 gui.show_error(e)
                 return True

@@ -1,7 +1,7 @@
 """Sibcoin look and feel."""
 
 import os
-from electrum_dash.util import pkg_dir
+from electrum_sibcoin.util import pkg_dir
 
 
 sibcoin_stylesheet = """

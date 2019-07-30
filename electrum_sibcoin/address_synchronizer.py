@@ -29,7 +29,7 @@ from typing import TYPE_CHECKING, Dict, Optional, Set, Tuple
 
 from . import bitcoin
 from .bitcoin import COINBASE_MATURITY, TYPE_ADDRESS, TYPE_PUBKEY
-from .dash_tx import tx_header_to_tx_type
+from .sibcoin_tx import tx_header_to_tx_type
 from .util import profiler, bfh, TxMinedInfo
 from .protx import ProTxManager
 from .transaction import Transaction, TxOutput

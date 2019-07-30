@@ -2,12 +2,12 @@ import asyncio
 import tempfile
 import unittest
 
-from electrum_dash import constants
-from electrum_dash.simple_config import SimpleConfig
-from electrum_dash import blockchain
-from electrum_dash.interface import Interface
-from electrum_dash.crypto import sha256
-from electrum_dash.util import bh2u
+from electrum_sibcoin import constants
+from electrum_sibcoin.simple_config import SimpleConfig
+from electrum_sibcoin import blockchain
+from electrum_sibcoin.interface import Interface
+from electrum_sibcoin.crypto import sha256
+from electrum_sibcoin.util import bh2u
 
 
 class MockTaskGroup:

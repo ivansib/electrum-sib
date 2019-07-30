@@ -8,7 +8,7 @@ import getpass
 import logging
 
 import electrum_sibcoin
-from electrum_sibcoin.dash_tx import SPEC_TX_NAMES
+from electrum_sibcoin.sibcoin_tx import SPEC_TX_NAMES
 from electrum_sibcoin.util import format_satoshis, set_verbosity
 from electrum_sibcoin.bitcoin import is_address, COIN, TYPE_ADDRESS
 from electrum_sibcoin.transaction import TxOutput

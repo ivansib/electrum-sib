@@ -1,11 +1,11 @@
 import os
 
-from electrum_dash.simple_config import SimpleConfig
-from electrum_dash import constants
-from electrum_dash.daemon import Daemon
-from electrum_dash.storage import WalletStorage
-from electrum_dash.wallet import Wallet, create_new_wallet
-from electrum_dash.commands import Commands
+from electrum_sibcoin.simple_config import SimpleConfig
+from electrum_sibcoin import constants
+from electrum_sibcoin.daemon import Daemon
+from electrum_sibcoin.storage import WalletStorage
+from electrum_sibcoin.wallet import Wallet, create_new_wallet
+from electrum_sibcoin.commands import Commands
 
 
 config = SimpleConfig({"testnet": True})  # to use ~/.electrum-dash/testnet as datadir

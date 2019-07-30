@@ -1,4 +1,4 @@
-from electrum_dash.i18n import _
+from electrum_sibcoin.i18n import _
 
 
 fullname = 'Hideez Wallet'

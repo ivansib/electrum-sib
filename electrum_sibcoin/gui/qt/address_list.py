@@ -176,7 +176,7 @@ class AddressList(MyTreeView):
         self.filter()
 
     def create_menu(self, position):
-        from electrum_dash.wallet import Multisig_Wallet
+        from electrum_sibcoin.wallet import Multisig_Wallet
         is_multisig = isinstance(self.wallet, Multisig_Wallet)
         can_delete = self.wallet.can_delete_address()
         selected = self.selected_in_column(self.Columns.ADDRESS)

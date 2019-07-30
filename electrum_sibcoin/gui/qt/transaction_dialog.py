@@ -45,7 +45,7 @@ from electrum_sibcoin.util import bfh
 from electrum_sibcoin.transaction import SerializationError, Transaction
 from electrum_sibcoin.logging import get_logger
 
-from .dash_qt import ExtraPayloadWidget
+from .sibcoin_qt import ExtraPayloadWidget
 from .util import (MessageBoxMixin, read_QIcon, Buttons, CopyButton,
                    MONOSPACE_FONT, ColorScheme, ButtonsLineEdit)
 

@@ -10,12 +10,12 @@ from PyQt5.QtCore import Qt, QThread, pyqtSignal
 from PyQt5.QtWidgets import (QWidget, QVBoxLayout, QLabel, QProgressBar,
                              QHBoxLayout, QPushButton)
 
-from electrum_dash import version
-from electrum_dash import constants
-from electrum_dash import ecc
-from electrum_dash.i18n import _
-from electrum_dash.util import make_aiohttp_session
-from electrum_dash.logging import Logger
+from electrum_sibcoin import version
+from electrum_sibcoin import constants
+from electrum_sibcoin import ecc
+from electrum_sibcoin.i18n import _
+from electrum_sibcoin.util import make_aiohttp_session
+from electrum_sibcoin.logging import Logger
 
 
 class UpdateCheck(QWidget, Logger):
