@@ -3228,9 +3228,9 @@ class ElectrumWindow(QMainWindow, MessageBoxMixin, Logger):
             if not self.fx: return
             b = self.fx.is_enabled()
             ex_combo.setEnabled(b)
+            c = self.fx.get_currency()
             if b:
                 h = self.fx.get_history_config()
-                c = self.fx.get_currency()
                 exchanges = self.fx.get_exchanges_by_ccy(c, h)
             else:
                 exchanges = self.fx.get_exchanges_by_ccy(c, False)

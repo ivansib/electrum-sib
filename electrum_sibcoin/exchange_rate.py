@@ -144,7 +144,7 @@ class ExchangeBase(Logger):
         return sorted([str(a) for (a, b) in rates.items() if b is not None and len(a)==3])
 
 class Livecoin(ExchangeBase):
-    def get_rates(self, ccy):
+    async def get_rates(self, ccy):
         corCcy = self.correctCcy(ccy)
         json = self.get_json('api.livecoin.net',
                              '/exchange/ticker?currencyPair=SIB/%s' % corCcy)
@@ -159,44 +159,22 @@ class Livecoin(ExchangeBase):
         return ccy
 
 class CoinGecko(ExchangeBase):
-    def get_rates(self, ccy):
-        json = self.get_json('api.coingecko.com',
-                             '/api/v3/coins/sibcoin/market_chart?vs_currency=%s&days=1' % ccy)
-        
-        quote_currencies = {}
-        size = len(json["prices"])
-        current = Decimal(json["prices"][size - 1][1])
-        quote_currencies[ccy] = current
-        return quote_currencies
+    async def get_rates(self, ccy):
+        json = await self.get_json('api.coingecko.com',
+                                   '/api/v3/coins/sibcoin')
+        r = dict([(ccy.upper(), Decimal(d))
+                  for ccy, d in json['market_data']['current_price'].items()])
+        return r
 
     def history_ccys(self):
         return ['RUB', 'USD', 'EUR', 'BTC', 'ETH']
 
-    def request_history(self, ccy):        
-        d = {}
-        if ccy in self.history:
-            d = self.history[ccy].copy()
+    async def request_history(self, ccy):
+        history = await self.get_json('api.coingecko.com',
+                                      '/api/v3/coins/sibcoin/market_chart?vs_currency=%s&days=max' % ccy)
 
-        t = time.time()
-        isWork = True
-        while (isWork):
-            st = time.gmtime(t)
-            stForRec = time.strftime("%d-%m-%Y", st)
-            history = self.get_json('api.coingecko.com',
-                               '/api/v3/coins/sibcoin/history?date=%s' % stForRec)
-            if "try_again" in history:
-                sleep(1)
-            elif "market_data" not in history:
-                isWork = False
-            else:
-                price = history["market_data"]["current_price"][ccy.lower()]
-                stForDict = time.strftime("%Y-%m-%d", st)
-                if stForDict in d:
-                    isWork = False
-                else:
-                    d[stForDict] = price
-                    t = t - 24 * 3600
-        return d
+        return dict([(datetime.utcfromtimestamp(h[0]/1000).strftime('%Y-%m-%d'), h[1])
+                     for h in history['prices']])
 
 class Bittrex(ExchangeBase):
     async def get_rates(self, ccy):
