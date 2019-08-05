@@ -458,23 +458,23 @@ QAbstractSpinBox::down-button {
 }
 
 QAbstractSpinBox::up-arrow {
-    image: url(electrum_sibcoin/gui/icons/dash_upArrow_small.png);
+    image: url(electrum_sibcoin/gui/icons/sibcoin_upArrow_small.png);
     width: 10px;
     height: 10px;
 }
 
 QAbstractSpinBox::up-arrow:disabled, QAbstractSpinBox::up-arrow:off {
-    image: url(electrum_sibcoin/gui/icons/dash_upArrow_small_disabled.png);
+    image: url(electrum_sibcoin/gui/icons/sibcoin_upArrow_small_disabled.png);
 }
 
 QAbstractSpinBox::down-arrow {
-    image: url(electrum_sibcoin/gui/icons/dash_downArrow_small.png);
+    image: url(electrum_sibcoin/gui/icons/sibcoin_downArrow_small.png);
     width: 10px;
     height: 10px;
 }
 
 QAbstractSpinBox::down-arrow:disabled, QAbstractSpinBox::down-arrow:off {
-    image: url(electrum_sibcoin/gui/icons/dash_downArrow_small_disabled.png);
+    image: url(electrum_sibcoin/gui/icons/sibcoin_downArrow_small_disabled.png);
 }
 
 QSlider::groove:horizontal {
@@ -618,19 +618,19 @@ QScrollBar:up-arrow, QScrollBar:down-arrow, QScrollBar:left-arrow, QScrollBar:ri
 }
 
 QScrollBar:up-arrow {
-    background-image: url('electrum_sibcoin/gui/icons/dash_upArrow_small.png');
+    background-image: url('electrum_sibcoin/gui/icons/sibcoin_upArrow_small.png');
 }
 
 QScrollBar:down-arrow {
-    background-image: url('electrum_sibcoin/gui/icons/dash_downArrow_small.png');
+    background-image: url('electrum_sibcoin/gui/icons/sibcoin_downArrow_small.png');
 }
 
 QScrollBar:left-arrow {
-    background-image: url('electrum_sibcoin/gui/icons/dash_leftArrow_small.png');
+    background-image: url('electrum_sibcoin/gui/icons/sibcoin_leftArrow_small.png');
 }
 
 QScrollBar:right-arrow {
-    background-image: url('electrum_sibcoin/gui/icons/dash_rightArrow_small.png');
+    background-image: url('electrum_sibcoin/gui/icons/sibcoin_rightArrow_small.png');
 }
 
 
