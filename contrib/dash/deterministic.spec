@@ -1,6 +1,4 @@
 # -*- mode: python -*-
-import os
-import os.path
 import sys
 from PyInstaller.utils.hooks import collect_data_files, collect_submodules
 
@@ -11,9 +9,6 @@ for i, x in enumerate(sys.argv):
         break
 else:
     raise Exception('no name')
-
-PY36BINDIR =  os.environ.get('PY36BINDIR')
-DASH_ELECTRUM_VERSION =  os.environ.get('DASH_ELECTRUM_VERSION')
 
 hiddenimports = collect_submodules('trezorlib')
 hiddenimports += collect_submodules('hideezlib')
@@ -63,6 +58,7 @@ datas = [
     ('electrum_dash/locale', 'electrum_dash/locale'),
     ('electrum_dash/wordlist', 'electrum_dash/wordlist'),
     ('electrum_dash/gui/icons', 'electrum_dash/gui/icons'),
+    ('C:\\zbarw', '.'),
 ]
 
 datas += collect_data_files('trezorlib')
@@ -71,13 +67,10 @@ datas += collect_data_files('safetlib')
 datas += collect_data_files('btchip')
 datas += collect_data_files('keepkeylib')
 
-# Add the QR Scanner helper app
-datas += [('contrib/CalinsQRReader/build/Release/CalinsQRReader.app', './contrib/CalinsQRReader/build/Release/CalinsQRReader.app')]
-
 # Add libusb so Trezor and Safe-T mini will work
-binaries = [('../libusb-1.0.dylib', '.')]
-binaries += [('../libsecp256k1.0.dylib', '.')]
-binaries += [('/usr/local/lib/libgmp.10.dylib', '.')]
+binaries = [('C:/Python36/libusb-1.0.dll', '.')]
+binaries += [('C:/x11_hash/libx11hash-0.dll', '.')]
+binaries += [('C:/libsecp256k1/libsecp256k1.dll', '.')]
 
 # https://github.com/pyinstaller/pyinstaller/wiki/Recipe-remove-tkinter-tcl
 sys.modules['FixTk'] = None
@@ -145,11 +138,26 @@ exe = EXE(pyz,
           upx=False,
           console=False,
           icon='electrum_dash/gui/icons/electrum-dash.ico',
-          name=os.path.join('build/electrum-dash/electrum-dash', cmdline_name))
+          name=os.path.join('build\\pyi.win32\\electrum', cmdline_name))
 
-# trezorctl separate bin
-tctl_a = Analysis([os.path.join(PY36BINDIR, 'trezorctl')],
-                  hiddenimports=['pkgutil'],
+# exe with console output
+conexe = EXE(pyz,
+          a.scripts,
+          exclude_binaries=True,
+          debug=False,
+          strip=False,
+          upx=False,
+          console=True,
+          icon='electrum_dash/gui/icons/electrum-dash.ico',
+          name=os.path.join('build\\pyi.win32\\electrum',
+                            'console-%s' % cmdline_name))
+
+# trezorctl separate executable
+tctl_a = Analysis(['C:/Python36/Scripts/trezorctl'],
+                  hiddenimports=[
+                    'pkgutil',
+                    'win32api',
+                  ],
                   excludes=excludes,
                   runtime_hooks=['pyi_tctl_runtimehook.py'])
 
@@ -162,24 +170,11 @@ tctl_exe = EXE(tctl_pyz,
            strip=False,
            upx=False,
            console=True,
-           name=os.path.join('build/electrum-dash/electrum-dash', 'trezorctl.bin'))
+           name=os.path.join('build\\pyi.win32\\electrum', 'trezorctl.exe'))
 
-coll = COLLECT(exe, #tctl_exe,
+coll = COLLECT(exe, conexe, #tctl_exe,
                a.binaries,
                a.datas,
                strip=False,
                upx=False,
                name=os.path.join('dist', 'electrum-dash'))
-
-app = BUNDLE(coll,
-             info_plist={
-                'NSHighResolutionCapable': True,
-                'NSSupportsAutomaticGraphicsSwitching': True,
-                'CFBundleURLTypes': [
-                    {'CFBundleURLName': 'dash', 'CFBundleURLSchemes': ['dash']}
-                ],
-             },
-             name=os.path.join('dist', 'Dash Electrum.app'),
-             appname="Dash Electrum",
-	         icon='electrum-dash.icns',
-             version=DASH_ELECTRUM_VERSION)
