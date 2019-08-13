@@ -1,13 +1,13 @@
 [app]
 
 # (str) Title of your application
-title = Sibcoin-Electrum
+title = Electrum
 
 # (str) Package name
-package.name = Electrum_SIBCOIN
+package.name = Electrum
 
 # (str) Package domain (needed for android/ios packaging)
-package.domain = org.sibcoin.electrum
+package.domain = org.electrum
 
 # (str) Source code where the main.py live
 source.dir = .
@@ -50,7 +50,7 @@ requirements =
 presplash.filename = %(source.dir)s/electrum_sibcoin/gui/icons/electrum_presplash.png
 
 # (str) Icon of the application
-icon.filename = %(source.dir)s/electrum_sibcoin/gui/icons/electrum-dash.png
+icon.filename = %(source.dir)s/electrum_sibcoin/gui/icons/electrum_launcher.png
 
 # (str) Supported orientation (one of landscape, portrait or all)
 orientation = portrait
@@ -82,10 +82,10 @@ android.ndk_api = 21
 android.private_storage = True
 
 # (str) Android NDK directory (if empty, it will be automatically downloaded.)
-android.ndk_path = /opt/android-ndk
+android.ndk_path = /opt/android/android-ndk
 
 # (str) Android SDK directory (if empty, it will be automatically downloaded.)
-android.sdk_path = /opt/android-sdk
+android.sdk_path = /opt/android/android-sdk
 
 # (str) ANT directory (if empty, it will be automatically downloaded.)
 #android.ant_path =
@@ -106,7 +106,7 @@ android.add_src = electrum_sibcoin/gui/kivy/data/java-classes/
 
 android.gradle_dependencies = me.dm7.barcodescanner:zxing:1.9.8
 
-android.add_activities = org.sibcoin.electrum.qr.SimpleScannerActivity
+android.add_activities = org.electrum.qr.SimpleScannerActivity
 
 # (str) python-for-android branch to use, if not master, useful to try
 # not yet merged features.
@@ -163,7 +163,6 @@ p4a.local_recipes = %(source.dir)s/contrib/p4a
 
 # (int) port number to specify an explicit --port= p4a argument (eg for bootstrap flask)
 #p4a.port =
-
 
 #
 # iOS specific

@@ -11,3 +11,4 @@ certifi
 pycryptodomex
 x11_hash
 python-bls
+setuptools

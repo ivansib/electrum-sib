@@ -6,6 +6,7 @@ import datetime
 import traceback
 from decimal import Decimal
 import threading
+import asyncio
 
 from electrum_sibcoin.bitcoin import TYPE_ADDRESS
 from electrum_sibcoin.storage import WalletStorage
