@@ -15,7 +15,6 @@ Build-Depends:
  python3-protobuf (>= 3.0.0),
  python3-dnspython (>= 1.11.1),
  python3-jsonrpclib-pelix (>= 0.3.1),
- python3-socks (>= 1.6.5),
  python3-aiorpcx (<< 0.19),
  python3-aiohttp (>= 3.3.0),
  python3-aiohttp-socks,
