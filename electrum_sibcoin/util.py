@@ -718,7 +718,7 @@ def parse_URI(uri: str, on_pr: Callable = None, *, loop=None) -> dict:
         return {'address': uri}
 
     u = urllib.parse.urlparse(uri)
-    if u.scheme != 'dash':
+    if u.scheme != 'sibcoin':
         raise InvalidBitcoinURI("Not a Sibcoin URI")
     address = u.path
 

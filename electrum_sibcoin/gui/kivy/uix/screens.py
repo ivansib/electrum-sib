@@ -18,10 +18,10 @@ from kivy.lang import Builder
 from kivy.factory import Factory
 from kivy.utils import platform
 
-from electrum_sibcoin.util import profiler, parse_URI, format_time, InvalidPassword, NotEnoughFunds, Fiat
+from electrum_sibcoin.util import (profiler, parse_URI, format_time, InvalidPassword, 
+                                   NotEnoughFunds, Fiat, send_exception_to_crash_reporter, InvalidBitcoinURI)
 from electrum_sibcoin import bitcoin
 from electrum_sibcoin.transaction import TxOutput, Transaction, tx_from_str
-from electrum_sibcoin.util import send_exception_to_crash_reporter, parse_URI, InvalidBitcoinURI
 from electrum_sibcoin.paymentrequest import PR_UNPAID, PR_PAID, PR_UNKNOWN, PR_EXPIRED
 from electrum_sibcoin.plugin import run_hook
 from electrum_sibcoin.wallet import InternalAddressCorruption
