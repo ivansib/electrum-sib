@@ -8,9 +8,9 @@ from PyQt5.QtWidgets import (QGridLayout, QDialog, QVBoxLayout, QCheckBox,
                              QTabWidget, QWidget, QLabel, QSpinBox, QLineEdit,
                              QTreeWidget, QTreeWidgetItem, QMenu, QHeaderView)
 
-from electrum_dash.dash_net import MIN_PEERS_LIMIT, MAX_PEERS_LIMIT
-from electrum_dash.i18n import _
-from electrum_dash.logging import get_logger
+from electrum_sibcoin.sibcoin_net import MIN_PEERS_LIMIT, MAX_PEERS_LIMIT
+from electrum_sibcoin.i18n import _
+from electrum_sibcoin.logging import get_logger
 
 from .util import Buttons, CloseButton
 

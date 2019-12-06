@@ -39,8 +39,8 @@ from typing import Optional, Dict
 
 from . import constants
 from .blockchain import MissingHeader
-from .dash_peer import DashPeer
-from .dash_msg import SporkID
+from .sibcoin_peer import DashPeer
+from .sibcoin_msg import SporkID
 from .i18n import _
 from .logging import Logger
 from .simple_config import SimpleConfig

@@ -35,7 +35,7 @@ from typing import Optional, Tuple
 
 from .bitcoin import public_key_to_p2pkh
 from .crypto import sha256d
-from .dash_msg import (SporkID, DashType, DashCmd, DashVersionMsg, DashPingMsg,
+from .sibcoin_msg import (SporkID, DashType, DashCmd, DashVersionMsg, DashPingMsg,
                        DashPongMsg, DashGetDataMsg, DashGetMNListDMsg)
 from .ecc import ECPubkey
 from .interface import GracefulDisconnect

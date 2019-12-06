@@ -51,7 +51,7 @@ from . import constants
 from . import blockchain
 from . import bitcoin
 from .blockchain import Blockchain, HEADER_SIZE
-from .dash_net import DashNet
+from .sibcoin_net import DashNet
 from .interface import (Interface, serialize_server, deserialize_server,
                         RequestTimedOut, NetworkTimeout, BUCKET_NAME_OF_ONION_SERVERS)
 from .version import ELECTRUM_VERSION, PROTOCOL_VERSION

@@ -32,7 +32,7 @@ from struct import pack
 from .crypto import sha256d
 from .bitcoin import hash160_to_p2pkh, b58_address_to_hash160
 from .ecc import msg_magic
-from .dash_tx import (to_compact_size, to_varbytes, serialize_ip, str_ip,
+from .sibcoin_tx import (to_compact_size, to_varbytes, serialize_ip, str_ip,
                       service_to_ip_port, TxOutPoint, read_uint16_nbo)
 from .transaction import Transaction, BCDataStream, SerializationError
 from .util import bh2u, bfh

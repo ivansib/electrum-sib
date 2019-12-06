@@ -26,3 +26,4 @@ electrum_sibcoin/gui/kivy/theming/light.atlas
 
 .idea/
 x11_gost_hash/
+x11_hash/
