@@ -32,7 +32,7 @@ from collections import namedtuple, defaultdict
 from struct import pack
 
 from .crypto import sha256d
-from .dash_msg import DashSMLEntry, DashQFCommitMsg
+from .sibcoin_msg import DashSMLEntry, DashQFCommitMsg
 from .logging import Logger
 from .simple_config import SimpleConfig
 from .transaction import Transaction, BCDataStream, SerializationError
