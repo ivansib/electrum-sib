@@ -66,7 +66,7 @@ def show_transaction(tx, parent, desc=None, prompt_if_unsaved=False):
         d = TxDialog(tx, parent, desc, prompt_if_unsaved)
     except SerializationError as e:
         _logger.exception('unable to deserialize the transaction')
-        parent.show_critical(_("Dash Electrum was unable to deserialize the transaction:") + "\n" + str(e))
+        parent.show_critical(_("Sibcoin Electrum was unable to deserialize the transaction:") + "\n" + str(e))
     else:
         dialogs.append(d)
         d.show()

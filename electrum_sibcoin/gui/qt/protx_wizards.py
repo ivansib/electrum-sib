@@ -308,7 +308,7 @@ class ImportLegacyWizardPage(QWizardPage):
                 value = 0
 
         if prevout_hash:
-            val_dash = '%s DASH' % (value/COIN) if value else ''
+            val_dash = '%s SIBCOIN' % (value/COIN) if value else ''
             self.collateral_val.setText(val_dash)
             self.collateral_value = value
             self.collateral.setText('%s:%s' % (prevout_hash, prevout_n))
@@ -596,12 +596,12 @@ class BlsKeysWizardPage(QWizardPage):
 
         self.setTitle(_('BLS keys setup'))
         if start_id in parent.UPD_ENTER_PAGES:
-            self.setSubTitle(_('Regenerate BLS keypair, setup dashd'))
+            self.setSubTitle(_('Regenerate BLS keypair, setup sibcoind'))
             if not self.bls_priv.text():
                 self.bls_priv.setText(new_mn.bls_privk)
                 self.bls_pub.setText(new_mn.pubkey_operator)
         else:
-            self.setSubTitle(_('Generate BLS keypair, setup dashd'))
+            self.setSubTitle(_('Generate BLS keypair, setup sibcoind'))
 
         if not self.bls_priv.text():
             self.generate_bls_keypair()
@@ -619,7 +619,7 @@ class BlsKeysWizardPage(QWizardPage):
         bls_pubk_hex = bh2u(bls_pubk.serialize())
         self.bls_info_label.setText(_('BLS keypair generated. Before '
                                       'registering new Masternode copy next '
-                                      'line to ~/.dashcore/dash.conf and '
+                                      'line to ~/.sibcoin/sibcoin.conf and '
                                       'restart masternode:'))
         self.bls_info_label.show()
         self.bls_info_edit.setText('masternodeblsprivkey=%s' % bls_privk_hex)
@@ -959,7 +959,7 @@ class CollateralWizardPage(QWizardPage):
         self.frozen_cb = QCheckBox('Include frozen addresses')
         self.frozen_cb.setChecked(False)
         self.frozen_cb.stateChanged.connect(self.frozen_state_changed)
-        self.not_found = QLabel('No 1000 DASH outputs were found.')
+        self.not_found = QLabel('No 1000 SIBCOIN outputs were found.')
         self.not_found.setObjectName('err-label')
         self.not_found.hide()
 
@@ -1586,7 +1586,7 @@ class Dip3FileWizard(QWizard):
         self.setWizardStyle(QWizard.ClassicStyle)
         self.setPixmap(QWizard.LogoPixmap, logo)
         self.setWindowTitle(title)
-        self.setWindowIcon(read_QIcon('electrum-dash.png'))
+        self.setWindowIcon(read_QIcon('electrum-sibcoin.png'))
         self.setMinimumSize(1000, 450)
 
 

@@ -109,7 +109,7 @@ class ElectrumGui(Logger):
         self.efilter = OpenFileEventFilter(self.windows)
         self.app = QElectrumApplication(sys.argv)
         self.app.installEventFilter(self.efilter)
-        self.app.setWindowIcon(read_QIcon("electrum-dash.png"))
+        self.app.setWindowIcon(read_QIcon("electrum-sibcoin.png"))
         # timer
         self.timer = QTimer(self.app)
         self.timer.setSingleShot(False)
@@ -207,8 +207,8 @@ class ElectrumGui(Logger):
 
     def show_dash_net_dialog(self, parent):
         if not self.daemon.network:
-            parent.show_warning(_('You are using Dash Electrum in offline'
-                                  ' mode; restart Dash Electrum if you want'
+            parent.show_warning(_('You are using Sibcoin Electrum in offline'
+                                  ' mode; restart Sibcoin Electrum if you want'
                                   ' to get connected'), title=_('Offline'))
             return
         if self.dash_net_dialog:

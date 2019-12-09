@@ -50,7 +50,7 @@ RECENT_LIST_FNAME = 'recent_protx_list.gz'
 
 
 class PartialMerkleTree(namedtuple('PartialMerkleTree', 'total hashes flags')):
-    '''Class representing CPartialMerkleTree of dashd'''
+    '''Class representing CPartialMerkleTree of sibcoind'''
     @classmethod
     def read_bytes(cls, raw_bytes):
         vds = BCDataStream()

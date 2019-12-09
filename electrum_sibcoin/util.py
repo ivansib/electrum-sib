@@ -68,7 +68,7 @@ base_units = {'SIB':8, 'mSIB':5, 'uSIB':2, 'ivans':0}
 base_units_inverse = inv_dict(base_units)
 base_units_list = ['SIB', 'mSIB', 'uSIB', 'ivans']  # list(dict) does not guarantee order
 
-DECIMAL_POINT_DEFAULT = 8  # DASH
+DECIMAL_POINT_DEFAULT = 8  # SIBCOIN
 
 
 class UnknownBaseUnit(Exception): pass
@@ -806,7 +806,7 @@ def create_bip21_uri(addr, amount_sat: Optional[int], message: Optional[str],
             raise Exception(f"illegal key for URI: {repr(k)}")
         v = urllib.parse.quote(v)
         query.append(f"{k}={v}")
-    p = urllib.parse.ParseResult(scheme='dash', netloc='', path=addr, params='', query='&'.join(query), fragment='')
+    p = urllib.parse.ParseResult(scheme='sibcoin', netloc='', path=addr, params='', query='&'.join(query), fragment='')
     return str(urllib.parse.urlunparse(p))
 
 
@@ -954,7 +954,7 @@ class TxMinedInfo(NamedTuple):
 
 def make_aiohttp_session(proxy: Optional[dict], headers=None, timeout=None):
     if headers is None:
-        headers = {'User-Agent': 'Dash-Electrum'}
+        headers = {'User-Agent': 'Sibcoin-Electrum'}
     if timeout is None:
         timeout = aiohttp.ClientTimeout(total=30)
     elif isinstance(timeout, (int, float)):

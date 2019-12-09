@@ -134,7 +134,7 @@ class btchip_dash(btchip):
 
         params = []
         if transaction.extra_data:
-            # Dash DIP2 extra data: By appending data to the 'lockTime' transfer we force the device into the
+            # Sibcoin DIP2 extra data: By appending data to the 'lockTime' transfer we force the device into the
             # BTCHIP_TRANSACTION_PROCESS_EXTRA mode, which gives us the opportunity to sneak with an additional
             # data block.
             if len(transaction.extra_data) > 255 - len(transaction.lockTime):
@@ -291,7 +291,7 @@ class Ledger_Client():
                 self.perform_hw1_preflight()
             except BTChipException as e:
                 if (e.sw == 0x6d00 or e.sw == 0x6700):
-                    raise UserFacingException(_("Device not in Dash mode")) from e
+                    raise UserFacingException(_("Device not in Sibcoin mode")) from e
                 raise e
             self.preflightDone = True
 

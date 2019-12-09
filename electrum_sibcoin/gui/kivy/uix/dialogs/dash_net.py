@@ -23,7 +23,7 @@ Builder.load_string('''
     _received: _('Received') + ': %s KiB' % self.received
     _sent: _('Sent') + ': %s KiB' % self.sent
     title: ', '.join([self._total, self._received, self._sent])
-    description: _('Data flow over Dash network')
+    description: _('Data flow over Sibcoin network')
     action: lambda x: None
 
 
@@ -168,7 +168,7 @@ Builder.load_string('''
 
 
 <SporksPopup@Popup>
-    title: _('Dash Sporks Values')
+    title: _('Sibcoin Sporks Values')
     vbox: vbox
     BoxLayout:
         orientation: 'vertical'
@@ -218,7 +218,7 @@ Builder.load_string('''
 
 
 <BanlistPopup@Popup>
-    title: _('Banned Dash Peers')
+    title: _('Banned Sibcoin Peers')
     vbox: vbox
     BoxLayout:
         orientation: 'vertical'
@@ -249,8 +249,8 @@ Builder.load_string('''
             on_release: root.dismiss()
 
 
-<DashNetDialog@Popup>
-    title: _('Dash Network')
+<Dash.NetDialog@Popup>
+    title: _('Sibcoin Network')
     BoxLayout:
         orientation: 'vertical'
         ScrollView:
@@ -272,18 +272,18 @@ Builder.load_string('''
                 CardSeparator
                 SettingsItem:
                     value: ': ON' if root.run_dash_net else ': OFF'
-                    title: _('Enable Dash Network') + self.value
-                    description: _('Enable or Disable Dash network')
+                    title: _('Enable Sibcoin Network') + self.value
+                    description: _('Enable or Disable Sibcoin network')
                     action: root.toggle_dash_net
                 CardSeparator
                 SettingsItem:
                     title: _('Connected Peers') + ': %s' % len(root.peers)
-                    description: _('Number of currently connected Dash peers')
+                    description: _('Number of currently connected Sibcoin peers')
                     action: root.show_peers
                 CardSeparator
                 SettingsItem:
                     title: _('Max Peers') + ': %s' % root.max_peers
-                    description: _('Maximally allowed Dash peers count')
+                    description: _('Maximally allowed Sibcoin peers count')
                     action: root.change_max_peers
                 CardSeparator
                 SettingsItem:
@@ -299,12 +299,12 @@ Builder.load_string('''
                 CardSeparator
                 SettingsItem:
                     title: _('Sporks') + ': %s' % len(root.sporks)
-                    description: _('Dash Sporks Values')
+                    description: _('Sibcoin Sporks Values')
                     action: root.show_sporks
                 CardSeparator
                 SettingsItem:
                     title: _('Banlist') + ': %s' % len(root.banlist)
-                    description: _('Banned Dash Peers')
+                    description: _('Banned Sibcoin Peers')
                     action: root.show_banlist
                 CardSeparator
                 SettingsItem:

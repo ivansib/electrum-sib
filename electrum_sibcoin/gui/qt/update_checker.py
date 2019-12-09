@@ -18,8 +18,8 @@ from electrum_sibcoin.logging import Logger
 
 
 class UpdateCheck(QWidget, Logger):
-    url = "https://raw.githubusercontent.com/akhavr/electrum-dash/master/.latest-version"
-    download_url = "https://github.com/akhavr/electrum-dash/releases"
+    url = "https://raw.githubusercontent.com/ivansib/electrum-sib/master/.latest-version"
+    download_url = "https://github.com/ivansib/electrum-sib/releases"
 
 
     VERSION_ANNOUNCEMENT_SIGNING_KEYS = (
@@ -29,7 +29,7 @@ class UpdateCheck(QWidget, Logger):
     def __init__(self, main_window, latest_version=None):
         self.main_window = main_window
         QWidget.__init__(self)
-        self.setWindowTitle('Dash Electrum - ' + _('Update Check'))
+        self.setWindowTitle('Sibcoin Electrum - ' + _('Update Check'))
         self.content = QVBoxLayout()
         self.content.setContentsMargins(*[10]*4)
 
@@ -92,10 +92,10 @@ class UpdateCheck(QWidget, Logger):
                 self.detail_label.setText(_("You can download the new version from {}.").format(url))
             else:
                 self.heading_label.setText('<h2>' + _("Already up to date") + '</h2>')
-                self.detail_label.setText(_("You are already on the latest version of Dash Electrum."))
+                self.detail_label.setText(_("You are already on the latest version of Sibcoin Electrum."))
         else:
             self.heading_label.setText('<h2>' + _("Checking for updates...") + '</h2>')
-            self.detail_label.setText(_("Please wait while Dash Electrum checks for available updates."))
+            self.detail_label.setText(_("Please wait while Sibcoin Electrum checks for available updates."))
 
 
 class UpdateCheckThread(QThread, Logger):

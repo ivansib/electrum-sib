@@ -231,7 +231,7 @@ class DashNetDialogLayout(object):
         sporks_tab = QWidget()
         banlist_tab = QWidget()
         bls_speed_tab = QWidget()
-        tabs.addTab(dash_net_tab, _('Dash Network'))
+        tabs.addTab(dash_net_tab, _('Sibcoin Network'))
         tabs.addTab(sporks_tab, _('Sporks'))
         tabs.addTab(banlist_tab, _('Banlist'))
 
@@ -288,7 +288,7 @@ class DashNetDialogLayout(object):
         grid.addWidget(self.read_kb, 0, 2, 1, 2)
         grid.addWidget(self.write_kb, 0, 4, 1, 2)
 
-        self.run_dash_net_cb = QCheckBox(_('Enable Dash Network'))
+        self.run_dash_net_cb = QCheckBox(_('Enable Sibcoin Network'))
         self.run_dash_net_cb.setChecked(self.config.get('run_dash_net', True))
         run_dash_net_modifiable = self.config.is_modifiable('run_dash_net')
         self.run_dash_net_cb.setEnabled(run_dash_net_modifiable)
@@ -357,14 +357,14 @@ class DashNetDialogLayout(object):
 
         # Dash Sporks tab
         vbox = QVBoxLayout(sporks_tab)
-        sporks_label = QLabel(_('Dash Sporks Values'))
+        sporks_label = QLabel(_('Sibcoin Sporks Values'))
         self.sporks_list = SporksWidget(self)
         vbox.addWidget(sporks_label)
         vbox.addWidget(self.sporks_list)
 
         # Dash Banlist tab
         vbox = QVBoxLayout(banlist_tab)
-        banlist_label = QLabel(_('Banned Dash Peers'))
+        banlist_label = QLabel(_('Banned Sibcoin Peers'))
         self.banlist_list = BanlistWidget(self)
         vbox.addWidget(banlist_label)
         vbox.addWidget(self.banlist_list)
@@ -414,7 +414,7 @@ class DashNetDialogLayout(object):
 class DashNetDialog(QDialog):
     def __init__(self, network, config, dash_net_sobj):
         QDialog.__init__(self)
-        self.setWindowTitle(_('Dash Network'))
+        self.setWindowTitle(_('Sibcoin Network'))
         self.setMinimumSize(700, 400)
         self.is_testnet = constants.net.TESTNET
         self.dnlayout = DashNetDialogLayout(network, config, self)

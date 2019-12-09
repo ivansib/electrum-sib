@@ -275,9 +275,9 @@ class ElectrumWindow(QMainWindow, MessageBoxMixin, Logger):
 
         # If the option hasn't been set yet
         if config.get('check_updates') is None:
-            choice = self.question(title="Dash Electrum - " + _("Enable update check"),
-                                   msg=_("For security reasons we advise that you always use the latest version of Dash Electrum.") + " " +
-                                       _("Would you like to be notified when there is a newer version of Dash Electrum available?"))
+            choice = self.question(title="Sibcoin Electrum - " + _("Enable update check"),
+                                   msg=_("For security reasons we advise that you always use the latest version of Sibcoin Electrum.") + " " +
+                                       _("Would you like to be notified when there is a newer version of Sibcoin Electrum available?"))
             config.set_key('check_updates', bool(choice), save=True)
 
         if config.get('check_updates', False):
@@ -285,7 +285,7 @@ class ElectrumWindow(QMainWindow, MessageBoxMixin, Logger):
             # to prevent GC from getting in our way.
             def on_version_received(v):
                 if UpdateCheck.is_newer(v):
-                    self.update_check_button.setText(_("Update to Dash Electrum {} is available").format(v))
+                    self.update_check_button.setText(_("Update to Sibcoin Electrum {} is available").format(v))
                     self.update_check_button.clicked.connect(lambda: self.show_update_check(v))
                     self.update_check_button.show()
             self._update_check_thread = UpdateCheckThread(self)
@@ -504,7 +504,7 @@ class ElectrumWindow(QMainWindow, MessageBoxMixin, Logger):
             self.setGeometry(100, 100, 840, 400)
 
     def watching_only_changed(self):
-        name = "Dash Electrum Testnet" if constants.net.TESTNET else "Dash Electrum"
+        name = "Sibcoin Electrum Testnet" if constants.net.TESTNET else "Sibcoin Electrum"
         title = '%s %s  -  %s' % (name, ELECTRUM_VERSION,
                                         self.wallet.basename())
         extra = [self.wallet.storage.get('wallet_type', '?')]
@@ -539,7 +539,7 @@ class ElectrumWindow(QMainWindow, MessageBoxMixin, Logger):
         msg = ''.join([
             _("You are in testnet mode."), ' ',
             _("Testnet coins are worthless."), '\n',
-            _("Testnet is separate from the main Dash network. It is used for testing.")
+            _("Testnet is separate from the main Sibcoin network. It is used for testing.")
         ])
         cb = QCheckBox(_("Don't show this again."))
         cb_checked = False
@@ -1305,7 +1305,7 @@ class ElectrumWindow(QMainWindow, MessageBoxMixin, Logger):
         self.extra_payload = ExtraPayloadWidget(self)
         self.extra_payload.hide()
         msg = _('Extra payload.') + '\n\n'\
-              + _('Dash DIP2 Special Transations extra payload.')
+              + _('Sibcoin DIP2 Special Transations extra payload.')
         self.extra_payload_label = HelpLabel(_('Extra payload'), msg)
         self.extra_payload_label.hide()
         grid.addWidget(self.extra_payload_label, 7, 0)
@@ -2242,7 +2242,7 @@ class ElectrumWindow(QMainWindow, MessageBoxMixin, Logger):
         sb.addPermanentWidget(self.seed_button)
         self.status_button = StatusBarButton(read_QIcon("status_disconnected.png"), _("Network"), lambda: self.gui_object.show_network_dialog(self))
         sb.addPermanentWidget(self.status_button)
-        self.dash_net_button = StatusBarButton(read_QIcon('dash_net_0.png'), _("Dash Network"), lambda: self.gui_object.show_dash_net_dialog(self))
+        self.dash_net_button = StatusBarButton(read_QIcon('dash_net_0.png'), _("Sibcoin Network"), lambda: self.gui_object.show_dash_net_dialog(self))
         self.update_dash_net_status_btn()
         sb.addPermanentWidget(self.dash_net_button)
         run_hook('create_status_bar', sb)
