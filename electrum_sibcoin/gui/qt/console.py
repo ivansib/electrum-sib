@@ -124,6 +124,7 @@ class Console(QtWidgets.QPlainTextEdit):
         self.unlock_widget.setLayout(grid)
         self.unlock_widget.hide()
         self.lock_if_need()
+        self.hide()
 
     def resizeEvent(self, e):
         super().resizeEvent(e)
