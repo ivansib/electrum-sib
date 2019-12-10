@@ -6,13 +6,13 @@ from kivy.properties import (NumericProperty, StringProperty, BooleanProperty,
 from kivy.lang import Builder
 from kivy.logger import Logger
 
-from electrum_dash.gui.kivy.i18n import _
+from electrum_sibcoin.gui.kivy.i18n import _
 
 
 Builder.load_string('''
-#:import _ electrum_dash.gui.kivy.i18n._
-#:import MIN_PEERS_LIMIT electrum_dash.dash_net.MIN_PEERS_LIMIT
-#:import MAX_PEERS_LIMIT electrum_dash.dash_net.MAX_PEERS_LIMIT
+#:import _ electrum_sibcoin.gui.kivy.i18n._
+#:import MIN_PEERS_LIMIT electrum_sibcoin.dash_net.MIN_PEERS_LIMIT
+#:import MAX_PEERS_LIMIT electrum_sibcoin.dash_net.MAX_PEERS_LIMIT
 
 
 <DashNetStatItem@SettingsItem>
