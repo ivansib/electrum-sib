@@ -47,7 +47,7 @@ if platform.system() in ['Linux', 'FreeBSD', 'DragonFly']:
             usr_share = os.path.expanduser('~/.local/share')
     data_files += [
         (os.path.join(usr_share, 'applications/'), ['electrum-sibcoin.desktop']),
-        (os.path.join(usr_share, icons_dirname), ['icons/electrum-sibcoin.png'])
+        (os.path.join(usr_share, icons_dirname), ['electrum_sibcoin/gui/icons/electrum-sibcoin.png'])
     ]
 
 extras_require = {

@@ -124,13 +124,12 @@ mkdir -p "$CACHEDIR/pip_cache"
 "$python" -m pip install --cache-dir "$CACHEDIR/pip_cache" "$PROJECT_ROOT"
 
 info "copying zbar"
-cp "/usr/lib/libzbar.so.0" "$APPDIR/usr/lib/libzbar.so.0"
+cp "/usr/lib/x86_64-linux-gnu/libzbar.so.0" "$APPDIR/usr/lib/libzbar.so.0"
 
 
 info "desktop integration."
 cp "$PROJECT_ROOT/electrum-sibcoin.desktop" "$APPDIR/electrum-sibcoin.desktop"
-cp "$PROJECT_ROOT/icons/electrum-sibcoin.png" "$APPDIR/electrum-sibcoin.png"
-
+cp "$PROJECT_ROOT/electrum_sibcoin/gui/icons/electrum-sibcoin.png" "$APPDIR/electrum-sibcoin.png"
 
 # add launcher
 cp "$CONTRIB/build-linux/appimage/apprun.sh" "$APPDIR/AppRun"

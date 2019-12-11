@@ -78,7 +78,7 @@ def scan_barcode_osx(*args_ignored, **kwargs_ignored):
     # This assumes the built macOS .app bundle which ends up putting the helper app in
     # .app/contrib/CalinsQRReader/build/Release/CalinsQRReader.app.
     root_ec_dir = os.path.abspath(os.path.dirname(__file__) + "/../")
-    prog = root_ec_dir + "/" + "contrib/CalinsQRReader/build/Release/CalinsQRReader.app/Contents/MacOS/CalinsQRReader"
+    prog = root_ec_dir + "/" + "contrib/osx/CalinsQRReader/build/Release/CalinsQRReader.app/Contents/MacOS/CalinsQRReader"
     if not os.path.exists(prog):
         raise RuntimeError("Cannot start QR scanner; helper app not found.")
     data = ''
