@@ -5,7 +5,7 @@ ENV LC_ALL=C.UTF-8 LANG=C.UTF-8
 RUN dpkg --add-architecture i386 && \
     apt-get update -q && \
     apt-get install -qy \
-        wget=1.19.4-1ubuntu2.1 \
+        wget=1.19.4-1ubuntu2.2 \
         gnupg2=2.2.4-1ubuntu1.2 \
         dirmngr=2.2.4-1ubuntu1.2 \
         python3-software-properties=0.96.24.32.1 \
@@ -13,7 +13,7 @@ RUN dpkg --add-architecture i386 && \
 
 RUN apt-get update -q && \
         apt-get install -qy \
-        git=1:2.17.1-1ubuntu0.4 \
+        git=1:2.17.1-1ubuntu0.5 \
         p7zip-full=16.02+dfsg-6 \
         make=4.1-9.1ubuntu1 \
         mingw-w64=5.0.3-1 \

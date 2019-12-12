@@ -46,7 +46,7 @@ datas = [
     (home+'electrum_sibcoin/locale', 'electrum_sibcoin/locale'),
     (home+'electrum_sibcoin/plugins', 'electrum_sibcoin/plugins'),
     ('C:\\Program Files (x86)\\ZBar\\bin\\', '.'),
-    (home+'icons', 'icons'),
+    (home+'electrum_sibcoin/gui/icons', 'electrum_sibcoin/gui/icons'),
 ]
 datas += collect_data_files('trezorlib')
 datas += collect_data_files('safetlib')
@@ -123,7 +123,7 @@ exe_standalone = EXE(
     debug=False,
     strip=None,
     upx=False,
-    icon=home+'icons/electrum-sibcoin.ico',
+    icon=home+'electrum_sibcoin/gui/icons/electrum-sibcoin.ico',
     console=False)
     # console=True makes an annoying black box pop up, but it does make Electrum output command line commands, with this turned off no output will be given but commands can still be used
 
@@ -136,7 +136,7 @@ exe_portable = EXE(
     debug=False,
     strip=None,
     upx=False,
-    icon=home+'icons/electrum-sibcoin.ico',
+    icon=home+'electrum_sibcoin/gui/icons/electrum-sibcoin.ico',
     console=False)
 
 #####
@@ -150,7 +150,7 @@ exe_dependent = EXE(
     debug=False,
     strip=None,
     upx=False,
-    icon=home+'icons/electrum-sibcoin.ico',
+    icon=home+'electrum_sibcoin/gui/icons/electrum-sibcoin.ico',
     console=False)
 
 coll = COLLECT(
@@ -161,6 +161,6 @@ coll = COLLECT(
     strip=None,
     upx=True,
     debug=False,
-    icon=home+'icons/electrum-sibcoin.ico',
+    icon=home+'electrum_sibcoin/gui/icons/electrum-sibcoin.ico',
     console=False,
     name=os.path.join('dist', 'electrum'))
