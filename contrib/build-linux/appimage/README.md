@@ -1,26 +1,28 @@
 AppImage binary for Electrum
 ============================
 
-This assumes an Ubuntu host, but it should not be too hard to adapt to another
+This assumes an Ubuntu 18.04 host, but it should not be too hard to adapt to another
 similar system. The docker commands should be executed in the project's root
 folder.
 
 1. Install Docker
 
     ```
-    $ curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
-    $ sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
-    $ sudo apt-get update
-    $ sudo apt-get install -y docker-ce
+    $ sudo apt-get install docker.io
+    ```
+2. Start Docker
+
+    ```
+    $ sudo systemctl start docker
     ```
 
-2. Build image
+3. Build image
 
     ```
     $ sudo docker build --no-cache -t electrum-appimage-builder-img contrib/build-linux/appimage
     ```
 
-3. Build binary
+4. Build binary
 
     ```
     $ sudo docker run -it \
@@ -32,7 +34,7 @@ folder.
         ./build.sh
     ```
 
-4. The generated binary is in `./dist`.
+5. The generated binary is in `./dist`.
 
 
 ## FAQ
